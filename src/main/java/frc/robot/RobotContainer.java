@@ -4,17 +4,135 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoOrientCmd;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.drivers.Limelight;
+import swervelib.SwerveInputStream;
 
+/**
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
+
+  private final Limelight m_Limelight = new Limelight();
+
+  CommandJoystick m_primary = Constants.OperatorConstants.PRIMARY;
+  CommandXboxController m_secondary = Constants.OperatorConstants.SECONDARY;
+
+  // Driver speeds
+
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+      "swerve/neo"));
+
+  /**
+   * Converts driver input into a field-relative ChassisSpeeds that is controlled
+   * by angular velocity.
+   */
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+      () -> m_primary.getY() * ((m_primary.getZ() - (23 / 9)) / (40 / 9)),
+      () -> m_primary.getX() * ((m_primary.getZ() - (23 / 9)) / (40 / 9)))
+      .withControllerRotationAxis(getPosTwist)
+      .deadband(OperatorConstants.DEADBAND)
+      .allianceRelativeControl(true);
+  /**
+   * Clones the angular velocity input stream and converts it to a fieldRelative
+   * input stream.
+   */
+  public DoubleSupplier getNegTwist = () -> m_primary.getTwist();
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+      .withControllerHeadingAxis(m_primary::getTwist, getNegTwist)// checkfunction
+      .headingWhile(true);
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     configureBindings();
+    DriverStation.silenceJoystickConnectionWarning(true);
+    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
   }
 
-  private void configureBindings() {}
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
+   * predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
+   */
+  private void configureBindings() {
+    // DRIVETRAIN COMMAND ASSIGNMENTS R
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    final Supplier<ChassisSpeeds> DEATH_SPEEDS = () -> drivebase.getDeath();
 
+    // create triggers for primary buttons
+    // if joystick doesn't have the button you need
+    BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
+    Trigger zeroGyroTrig = new Trigger(zeroGyro);
+    BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
+    Trigger deathModeTrig = new Trigger(deathMode);
+    zeroGyroTrig.onTrue(drivebase.flipGyro());
+
+    // Auto Orient
+    m_primary.axisGreaterThan(6, .5).whileTrue(new AutoOrientCmd(drivebase, m_Limelight, 2, 4.25, -3.9, 2));
+    // Auto Commands
+
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
+    // COMMAND/TRIGGER ASSIGNMENTS
+
+    // Primary Driver
+    deathModeTrig.whileTrue(drivebase.drive(DEATH_SPEEDS));
+    // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
+    // drivebase).repeatedly());
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    // An example command will be run in autonomous
+    return drivebase.getAutonomousCommand("New Auto");
+  }
+
+  public Command getGyroReset() {
+    // An example command will be run in autonomous
+    return drivebase.flipGyro();
+  }
+
+  public void setMotorBrake(boolean brake) {
+    drivebase.setMotorBrake(brake);
   }
 }
