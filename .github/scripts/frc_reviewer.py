@@ -42,7 +42,7 @@ if not API_KEY:
     post_error_comment("API Key is missing from GitHub Secrets.")
 
 genai.configure(api_key=API_KEY)
-MODEL_ID = 'gemini-3-flash'
+MODEL_ID = 'gemini-3-flash-preview'
 model = genai.GenerativeModel(MODEL_ID)
 
 def get_all_java_files(root_dir="."):
