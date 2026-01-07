@@ -56,6 +56,7 @@ def get_all_java_files(root_dir="."):
     for root, _, files in os.walk(root_dir):
         for file in files:
             if file.endswith(".java"):
+                # Exclude vendor libraries to save tokens
                 if "VendorDeps" in root or "build" in root: continue
                 java_files.append(os.path.join(root, file))
     return java_files
@@ -89,11 +90,27 @@ def analyze_code():
         try:
             print(f"🚀 Sending to Gemini (Attempt {attempt + 1}/{max_retries})...")
             
-            # API Call using the settings from the top
+            # API Call
             response = client.models.generate_content(
                 model=MODEL_ID,
                 contents=full_prompt
             )
+
+            # --- PRINT BILLING RECEIPT ---
+            try:
+                usage = response.usage_metadata
+                in_tokens = usage.prompt_token_count
+                out_tokens = usage.candidates_token_count
+                total = usage.total_token_count
+                
+                print("\n" + "="*10 + " BILLING ESTIMATE " + "="*10)
+                print(f"📥 Input Tokens (Read):  {in_tokens}")
+                print(f"📤 Output Tokens (Wrote): {out_tokens}")
+                print(f"💰 Total Tokens:          {total}")
+                print("="*38 + "\n")
+            except:
+                print("Could not retrieve token usage data.")
+            # -----------------------------
             
             # SUCCESS
             with open("code_review.md", "w", encoding="utf-8") as f:
