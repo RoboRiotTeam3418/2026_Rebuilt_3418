@@ -5,6 +5,7 @@ import re
 from google import genai
 
 # ================= CONFIGURATION =================
+# We use Gemini 3 Flash Preview for maximum reasoning capability.
 MODEL_ID = 'gemini-3-flash-preview'
 
 BASE_SYSTEM_PROMPT = (
@@ -100,7 +101,6 @@ def get_impact_graph(all_files, changed_files_list):
             if clean_changed in file_map:
                 seed_files.add(clean_changed)
     
-    # --- CRITICAL FIX FOR SCHEDULED JOBS ---
     # If no specific changes found (e.g. Schedule run), return ALL as priority
     if not seed_files:
         return set(all_files), []
@@ -151,7 +151,6 @@ def analyze_code():
     
     if is_full_scan:
         print(f"✅ Mode: FULL AUDIT ({len(priority_files)} files).")
-        # Rename the header so the AI realizes it's looking at the whole project
         section_header = "--- 📂 PROJECT FILES (FULL AUDIT) ---"
         mode_instruction = (
             "\n\n🚨 **MODE: FULL SYSTEM AUDIT**\n"
@@ -178,7 +177,6 @@ def analyze_code():
         with open(path, "r", encoding="utf-8") as f:
             full_prompt += f"\n========== FILE: {path} ==========\n{f.read()}"
 
-    # Only add Context section if it actually exists (It won't in Full Scan)
     if context_files:
         full_prompt += "\n\n--- 📖 CONTEXT FILES (REFERENCE ONLY) ---\n"
         for path in context_files:
@@ -195,6 +193,18 @@ def analyze_code():
                 contents=full_prompt
             )
             
+            # --- RESTORED: Token Usage Logging ---
+            try:
+                usage = response.usage_metadata
+                print("\n" + "="*10 + " BILLING ESTIMATE " + "="*10)
+                print(f"📥 Input Tokens:  {usage.prompt_token_count}")
+                print(f"📤 Output Tokens: {usage.candidates_token_count}")
+                print(f"💰 Total Tokens:  {usage.total_token_count}")
+                print("="*38 + "\n")
+            except Exception:
+                print("⚠️ Could not retrieve token usage metadata.")
+            # -------------------------------------
+
             with open("code_review.md", "w", encoding="utf-8") as f:
                 f.write(response.text)
             print("✅ Analysis complete.")
