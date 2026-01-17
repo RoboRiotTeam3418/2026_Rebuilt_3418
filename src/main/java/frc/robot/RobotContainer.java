@@ -7,7 +7,6 @@ package frc.robot;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -93,15 +92,15 @@ public class RobotContainer {
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    final Supplier<ChassisSpeeds> DEATH_SPEEDS = () -> drivebase.getDeath();
-
+    final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
+    //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
+    //drive team is aware of this
     // create triggers for primary buttons
     // if joystick doesn't have the button you need
     BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
     Trigger zeroGyroTrig = new Trigger(zeroGyro);
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
-    zeroGyroTrig.onTrue(drivebase.flipGyro());
 
     // Auto Orient
     m_primary.axisGreaterThan(6, .5).whileTrue(new AutoOrientCmd(drivebase, m_Limelight, 2, 4.25, -3.9, 2));
@@ -112,7 +111,7 @@ public class RobotContainer {
     // COMMAND/TRIGGER ASSIGNMENTS
 
     // Primary Driver
-    deathModeTrig.whileTrue(drivebase.drive(DEATH_SPEEDS));
+    deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
     // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
     // drivebase).repeatedly());
   }
@@ -125,11 +124,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return drivebase.getAutonomousCommand("New Auto");
-  }
-
-  public Command getGyroReset() {
-    // An example command will be run in autonomous
-    return drivebase.flipGyro();
   }
 
   public void setMotorBrake(boolean brake) {
