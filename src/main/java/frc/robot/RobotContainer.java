@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoOrientCmd;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.drivers.LimelightHelpers;
 import swervelib.SwerveInputStream;
 
 /**
@@ -47,6 +48,25 @@ public class RobotContainer {
    * by angular velocity.
    */
   public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
+  public DoubleSupplier followTag = () -> {
+        if (LimelightHelpers.getTV("limelight")) {
+          return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
+        } else return 0;
+      };
+
+  SwerveInputStream driveFollowTag = SwerveInputStream.of(drivebase.getSwerveDrive(), 
+  () -> {
+    if (!LimelightHelpers.getTV("limelight")) return 0;
+    double ta = LimelightHelpers.getTA("limelight");
+    if (ta < 1.7) {
+      return (1 / -ta);
+    } else if (ta > 4) {
+      return ta / 15;
+    } else return 0;
+    }, 
+  () -> 0.0
+  ).withControllerRotationAxis(followTag);
+
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> m_primary.getY() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
       () -> m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)))
@@ -87,7 +107,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
@@ -107,6 +127,7 @@ public class RobotContainer {
     // COMMAND/TRIGGER ASSIGNMENTS
 
     // Primary Driver
+
     deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
     // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
     // drivebase).repeatedly());

@@ -414,6 +414,13 @@ public class SwerveSubsystem extends SubsystemBase
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
+  public Command drive(Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      swerveDrive.drive(speeds.get());
+    });
+  }
+
   /**
    * Drive the robot given a chassis field oriented velocity.
    *
@@ -432,6 +439,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
+      //System.out.println(velocity.get());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }
