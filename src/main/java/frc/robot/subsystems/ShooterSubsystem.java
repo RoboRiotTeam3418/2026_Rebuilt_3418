@@ -2,25 +2,31 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.util.drivers.LimelightHelpers;
 import frc.robot.util.drivers.LimelightHelpers.RawFiducial;
 import frc.robot.util.math.MathUtils;
 
+/** Shooter subsystem for controlling the flywheel(s) */
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
-    CommandJoystick m_primary = Constants.OperatorConstants.PRIMARY;
-    CommandXboxController m_secondary = Constants.OperatorConstants.SECONDARY;
 
     public double p, i, d;
     public PIDController pidController;
+    /**
+     * If true, override drive control with april tag position
+     */
     public boolean overrideDrive = false;
+
+    SparkMax sparkMaxA, sparkMaxB;
+    AbsoluteEncoder encoderA, encoderB;
 
     public ShooterSubsystem(SwerveSubsystem drivebase) {
         Instance = this;
@@ -30,6 +36,12 @@ public class ShooterSubsystem extends SubsystemBase {
         pidController = new PIDController(p, i, d);
         pidController.setSetpoint(1);
 
+        sparkMaxA = new SparkMax(0, SparkMax.MotorType.kBrushless);
+        sparkMaxB = new SparkMax(1, SparkMax.MotorType.kBrushless);
+
+        encoderA = sparkMaxA.getAbsoluteEncoder();
+        encoderB = sparkMaxB.getAbsoluteEncoder();
+
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
 
@@ -38,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return limelight horizontal offset to april tag at hub, clamped between -0.8 and 0.8
      */
     public DoubleSupplier aprilTagPos = () -> {
-        if (!LimelightHelpers.getTV("limelight")) return 0;
+        if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0;
         for (RawFiducial target : LimelightHelpers.getRawFiducials("limelight")) {
             if (target.id == 10 || target.id == 25) { // both tag ids at hub
                 return MathUtils.clamp(target.txnc, -0.8, 0.8);
@@ -53,10 +65,10 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return flywheel speed (0.05 to 1)
      */
     public double limelightCalculator() {
-        if (!LimelightHelpers.getTV("limelight")) return 0.85; // set flywheel speed regardless of vision
+        if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0.85; // set flywheel speed regardless of vision
         for (RawFiducial target : LimelightHelpers.getRawFiducials("limelight")) {
             if (target.id == 10 || target.id == 25) {
-                return MathUtils.clamp((1 / Math.max(target.ta, 0.05)), 0.05, 1); // use math.max to avoid divide by zero errors
+                return MathUtils.clamp((Math.max(target.distToCamera, 0.05)) / 10, 0.05, 1); // TUNE THIS PLEASE
             }
         }
 
@@ -77,8 +89,19 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public Command Shoot() {
         return run(() -> {
-            // motor.set(pid.calculate(encoder.getDistance(), limelightCalculator())); this is pretty much everything
+            sparkMaxA.set(pidController.calculate(encoderA.getPosition(), limelightCalculator()));
+            sparkMaxB.set(pidController.calculate(encoderB.getPosition(), limelightCalculator())); // facing same direction (as of 2026-01-24)
             // feed balls here
+        });
+    }
+
+    /**
+     * Command to stop shooting balls
+     */
+    public Command StopShooting() {
+        return run(() -> {
+            sparkMaxA.set(0);
+            sparkMaxB.set(0);
         });
     }
 

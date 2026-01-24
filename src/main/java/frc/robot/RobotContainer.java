@@ -100,8 +100,10 @@ public class RobotContainer {
     //drive team is aware of this
     // create triggers for primary buttons
     // if joystick doesn't have the button you need
-    BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
-    Trigger zeroGyroTrig = new Trigger(zeroGyro);
+
+    //BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
+    //Trigger zeroGyroTrig = new Trigger(zeroGyro);
+    
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
 
@@ -112,7 +114,7 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
     // COMMAND/TRIGGER ASSIGNMENTS
-    m_primary.button(1).onChange(shooter.ToggleOverride()).whileTrue(shooter.Shoot());
+    m_primary.button(1).onChange(shooter.ToggleOverride()).whileTrue(shooter.Shoot()).onFalse(shooter.StopShooting());
 
 
     // Primary Driver
