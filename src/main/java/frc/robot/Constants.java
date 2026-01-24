@@ -63,6 +63,8 @@ public final class Constants {
   public static final double DONT_SEE_TAG_WAIT_TIME = 1;
   public static final double POSE_VALIDATION_TIME = 0.3;
 
+  public static final int LIMELIGHT_PIPELINE_ID = 0;
+
   public static final class SubsystemConstants {
     // not drivebase constants
     public static final int ELEVMOT1ID = 20;

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.util.drivers.LimelightHelpers;
-import frc.robot.util.drivers.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.drivers.LimelightHelpers.RawFiducial;
 import frc.robot.util.math.MathUtils;
 import swervelib.SwerveInputStream;
@@ -33,12 +32,14 @@ public class ShooterSubsystem extends SubsystemBase {
         Log("P: " + p + ", I: " + i + ", D: " + d);
         pidController = new PIDController(p, i, d);
         pidController.setSetpoint(1);
+
+        LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
 
     public DoubleSupplier aprilTagPos = () -> {
         if (!LimelightHelpers.getTV("limelight")) return 0;
         for (RawFiducial target : LimelightHelpers.getRawFiducials("limelight")) {
-            if (target.id == 10 || target.id == 25) {
+            if (target.id == 10 || target.id == 25) { // both tag ids at hub
                 return MathUtils.clamp(target.txnc, -0.8, 0.8);
             }
         }
@@ -57,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!LimelightHelpers.getTV("limelight")) return 0.85; // set flywheel speed regardless of vision
         for (RawFiducial target : LimelightHelpers.getRawFiducials("limelight")) {
             if (target.id == 10 || target.id == 25) {
-                return MathUtils.clamp((1 / target.ta), 0.05, 1);
+                return MathUtils.clamp((1 / Math.max(target.ta, 0.05)), 0.05, 1); // use math.max to avoid divide by zero errors
             }
         }
 
