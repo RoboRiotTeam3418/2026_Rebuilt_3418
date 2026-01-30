@@ -22,40 +22,25 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoOrientCmd;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.util.LimelightTAMatrix;
-import frc.robot.util.ShooterDistanceMatrix;
-import swervelib.SwerveInputStream;
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
+  public DoubleSupplier followTag = () -> {
+        if (LimelightHelpers.getTV("limelight")) {
+          return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
+        } else return 0;
+      };
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
-public class RobotContainer {
-
-  CommandJoystick m_primary = Constants.OperatorConstants.PRIMARY;
-  CommandXboxController m_secondary = Constants.OperatorConstants.SECONDARY;
-
-  // Driver speeds
-
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-      "swerve/neo"));
-
-  private final ShooterSubsystem shooter = new ShooterSubsystem();
-
-  /**
-   * Converts driver input into a field-relative ChassisSpeeds that is controlled
-   * by angular velocity.
-   */
-  public final DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
-  private final DoubleSupplier aprilTag = () -> {
-    if (shooter.overrideDrive) return shooter.aprilTagPos.getAsDouble();
-    return getPosTwist.getAsDouble();
-  };
+  SwerveInputStream driveFollowTag = SwerveInputStream.of(drivebase.getSwerveDrive(), 
+  () -> {
+    if (!LimelightHelpers.getTV("limelight")) return 0;
+    double ta = LimelightHelpers.getTA("limelight");
+    if (ta < 1.7) {
+      return (1 / -ta);
+    } else if (ta > 4) {
+      return ta / 15;
+    } else return 0;
+    }, 
+  () -> 0.0
+  ).withControllerRotationAxis(followTag);
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> m_primary.getY() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
@@ -106,7 +91,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
@@ -130,6 +115,7 @@ public class RobotContainer {
 
 
     // Primary Driver
+
     deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
     // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
     // drivebase).repeatedly());
