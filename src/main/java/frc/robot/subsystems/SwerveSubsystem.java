@@ -112,6 +112,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
+    //System.out.println(swerveDrive.getModules()[2].getAbsolutePosition());
   }
 
   @Override
@@ -669,7 +670,7 @@ public class SwerveSubsystem extends SubsystemBase
   public ChassisSpeeds getDeath() {
     return new ChassisSpeeds(0, 0, getSwerveDrive().getMaximumChassisAngularVelocity());
   }
-    public Command driveCmd(ChassisSpeeds speeds) {
+  public Command driveCmd(ChassisSpeeds speeds) {
     return run(
         () -> {
           drive(speeds);

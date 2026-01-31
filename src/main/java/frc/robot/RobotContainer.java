@@ -103,6 +103,7 @@ public class RobotContainer {
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    zeroGyroTrig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.1,0,0)));
 
     // COMMAND/TRIGGER ASSIGNMENTS
 
