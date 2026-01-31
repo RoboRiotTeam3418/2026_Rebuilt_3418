@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutoOrientCmd;
+import frc.robot.commands.ClimbCmd;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -97,8 +97,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
   }
 
-  boolean triggerPressed = false;
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -118,7 +116,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
@@ -130,7 +128,7 @@ public class RobotContainer {
     Trigger deathModeTrig = new Trigger(deathMode);
 
     // Auto Orient (I dont believe we need this - Darwin )
-    m_primary.axisGreaterThan(6, .5).whileTrue(new AutoOrientCmd(drivebase, Constants.LIMELIGHT_PIPELINE_ID, 4.25, -3.9, 2));
+
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
