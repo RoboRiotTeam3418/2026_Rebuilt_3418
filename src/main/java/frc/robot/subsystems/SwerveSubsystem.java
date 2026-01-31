@@ -29,6 +29,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -80,7 +81,7 @@ public class SwerveSubsystem extends SubsystemBase
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
     {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e); // AI mentor assistor, this is infact safe, since the json should always exist and if it doesnt it needs to exist.
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
@@ -188,7 +189,8 @@ public class SwerveSubsystem extends SubsystemBase
 
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-    PathfindingCommand.warmupCommand().schedule();
+    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+    //PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
@@ -415,6 +417,13 @@ public class SwerveSubsystem extends SubsystemBase
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
+  public Command drive(Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      swerveDrive.drive(speeds.get());
+    });
+  }
+
   /**
    * Drive the robot given a chassis field oriented velocity.
    *
@@ -433,6 +442,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
+      //System.out.println(velocity.get());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }
