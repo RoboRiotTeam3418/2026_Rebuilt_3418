@@ -1,24 +1,28 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase{
-    SparkMax rotMotor;
-    SparkMax climbMotor;
-    AbsoluteEncoder rotEncoder;
+    SparkMax climb1;
+    SparkMax climb2;
+    SparkAnalogSensor climbPot;
 
     public Climber() {
-        rotMotor=new SparkMax(0, MotorType.kBrushless);
-        climbMotor= new SparkMax(0, MotorType.kBrushless);
-        rotEncoder=rotMotor.getAbsoluteEncoder();
+        climb1=new SparkMax(0, MotorType.kBrushless);
+        climb2= new SparkMax(0, MotorType.kBrushless);
+        climbPot=climb1.getAnalog();
     }
 
-    public Command climb(double speed) {
-        return runOnce(()->{climbMotor.set(speed);});
+    public void climb(double speed) {
+        climb1.set(speed);
+        climb2.set(-speed);
+    }
+    //TODO get the proper positions of the string pot
+    public double getCurrentHeight() {
+        return climbPot.getPosition();
     }
 }
