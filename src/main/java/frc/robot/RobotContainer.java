@@ -20,8 +20,34 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoOrientCmd;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.LimelightTAMatrix;
+import frc.robot.util.ShooterDistanceMatrix;
+import frc.robot.util.drivers.LimelightHelpers;
+import swervelib.SwerveInputStream;
+
+/**
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
+public class RobotContainer {
+
+  CommandJoystick m_primary = Constants.OperatorConstants.PRIMARY;
+  CommandXboxController m_secondary = Constants.OperatorConstants.SECONDARY;
+
+  // Driver speeds
+
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+      "swerve/neo"));
+
+
+  // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
+
   public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
@@ -45,7 +71,7 @@ import frc.robot.subsystems.SwerveSubsystem;
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> m_primary.getY() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
       () -> m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)))
-      .withControllerRotationAxis(aprilTag)
+      .withControllerRotationAxis(followTag)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
 
@@ -54,6 +80,7 @@ import frc.robot.subsystems.SwerveSubsystem;
    * Clones the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
+  
   public DoubleSupplier getNegTwist = () -> m_primary.getTwist();
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
       .withControllerHeadingAxis(m_primary::getTwist, getNegTwist)// checkfunction
@@ -108,11 +135,10 @@ import frc.robot.subsystems.SwerveSubsystem;
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
+    /* Shooter stuff:
     m_primary.button(1).onChange(shooter.triggerThing());
-
-    // COMMAND/TRIGGER ASSIGNMENTS
     shooter.setDefaultCommand(shooter.Shoot());
-
+    */
 
     // Primary Driver
 

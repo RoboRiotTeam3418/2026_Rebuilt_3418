@@ -6,7 +6,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,8 +16,6 @@ import frc.robot.util.drivers.LimelightHelpers;
 import frc.robot.util.math.MathUtils;
 
 /** Shooter subsystem for controlling the flywheel(s) */
-
-// TODO: Tune limelightcalc
 
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
@@ -67,8 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0;
 
         if (LimelightHelpers.getTID() == 10 || LimelightHelpers.getTID() == 25) {
-            Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace("limelight");
-            return pose.getX(); // i think x???
+            return LimelightHelpers.getTX("limelight");
         }
 
         return 0;
@@ -82,8 +78,8 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0.7; // set flywheel speed regardless of vision
 
         if (LimelightHelpers.getTID() == 10 || LimelightHelpers.getTID() == 26) {
-            double pose = LimelightHelpers.getTA("limelight");
-            return ShooterDistanceMatrix.get(LimelightTAMatrix.get(pose));
+            double ta = LimelightHelpers.getTA("limelight");
+            return ShooterDistanceMatrix.get(LimelightTAMatrix.get(ta));
         }
 
 
