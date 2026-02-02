@@ -48,7 +48,7 @@ public class RobotContainer {
 
   // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1* ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
@@ -68,10 +68,11 @@ public class RobotContainer {
   () -> 0.0
   ).withControllerRotationAxis(followTag);
 
+  
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> m_primary.getY() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
+      () -> m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
       () -> m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)))
-      .withControllerRotationAxis(followTag)
+      .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
 
@@ -126,6 +127,8 @@ public class RobotContainer {
     Trigger zeroGyroTrig = new Trigger(zeroGyro);
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
+    BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
+    Trigger trig = new Trigger(button);
 
     // Auto Orient (I dont believe we need this - Darwin )
 
@@ -133,7 +136,7 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     zeroGyroTrig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.1,0,0)));
-
+    trig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(0,.1,0)));
     /* Shooter stuff:
     m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());

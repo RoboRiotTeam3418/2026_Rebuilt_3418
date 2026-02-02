@@ -47,7 +47,6 @@ public final class Constants {
   public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
   // Maximum speed of the robot in meters per second, used to limit acceleration.
-  public static final double ARM_ANGLE = 53.0; // angle between straight up arm and placing arm
 
   // all this stuff is important I think?
   public static final double X_REEF_ALIGNMENT_P = 3.3;

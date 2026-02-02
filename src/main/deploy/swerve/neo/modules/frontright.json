@@ -1,9 +1,9 @@
 {
   "location": {
     "front": 11.75,
-    "left": -11.75
+    "left": 11.75
   },
-  "absoluteEncoderOffset": 108,
+  "absoluteEncoderOffset": 20,
   "drive": {
     "type": "neo",
     "id": 11,
@@ -15,9 +15,9 @@
     "canbus": 10
   },
   "encoder": {
-    "type": "cancoder",
-    "id": 15,
-    "canbus": 15
+    "type": "analog",
+    "id": 1,
+    "canbus": null
   },
   "inverted": {
     "drive": false,
