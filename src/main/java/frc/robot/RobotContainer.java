@@ -48,7 +48,7 @@ public class RobotContainer {
 
   // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1* ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
@@ -70,8 +70,8 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
-      () -> m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)))
+      () -> (m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))) / 2,
+      () -> (m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))) / 2)
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
@@ -117,7 +117,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);//drivebase.driveFieldOriented(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
@@ -156,7 +156,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;//todo:drivebase.getAutonomousCommand("New Auto");
+    return drivebase.getAutonomousCommand("New Auto");
   }
 
   public void setMotorBrake(boolean brake) {
