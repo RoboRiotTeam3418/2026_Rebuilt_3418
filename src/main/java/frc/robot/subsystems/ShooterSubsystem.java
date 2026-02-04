@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
     static boolean trigger = false;
 
     SparkMax sparkMaxA, sparkMaxB;
-    AbsoluteEncoder encoderA, encoderB;
+    public AbsoluteEncoder encoderA, encoderB;
 
     public ShooterSubsystem() {
         Instance = this;
@@ -115,9 +115,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
             double speed = MathUtils.clamp( beforeClamp, 0, 0.7);
 
-            sparkMaxA.set(speed);
-            sparkMaxB.set(speed); // facing same direction (as of 2026-01-24)
+            setSpeeds(speed);
         });
+    }
+
+    /**
+     * Sets the speed of both motors
+     * @param speed the target speed
+     */
+    public void setSpeeds(double speed) {
+        sparkMaxA.set(speed);
+        sparkMaxB.set(speed); 
     }
 
     /**

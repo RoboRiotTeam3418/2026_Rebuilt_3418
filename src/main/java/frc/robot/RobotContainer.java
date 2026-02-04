@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCmd;
+import frc.robot.commands.ShootCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  private final ShootCmd shootCmd;
 
 
 
@@ -99,7 +101,11 @@ public class RobotContainer {
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    shootCmd = new ShootCmd(m_shooter);
+
     NamedCommands.registerCommand("test", m_shooter.test());
+    NamedCommands.registerCommand("Shoot", shootCmd);
   }
 
   /**
