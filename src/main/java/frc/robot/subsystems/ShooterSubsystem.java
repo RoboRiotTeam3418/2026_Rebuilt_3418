@@ -154,4 +154,9 @@ public class ShooterSubsystem extends SubsystemBase {
             System.out.println(objects);
         }
     }
+        public Command test() {
+        return runOnce(() -> {
+            System.out.println("Hi");
+        });
+    }
 }

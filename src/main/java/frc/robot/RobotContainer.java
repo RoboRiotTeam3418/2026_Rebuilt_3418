@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCmd;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -44,6 +46,8 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+
 
 
   // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
@@ -95,7 +99,7 @@ public class RobotContainer {
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+    NamedCommands.registerCommand("test", m_shooter.test());
   }
 
   /**
@@ -117,7 +121,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);//drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);//drivebase.driveFieldOriented(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
