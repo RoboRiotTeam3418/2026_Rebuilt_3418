@@ -14,6 +14,7 @@ public class ClimbCmd extends Command {
   private final Climber climb;
   private double height;
   private PIDController pid;
+  @SuppressWarnings("unused")
   private final static double ALLOWANCE = 1; // inches
   private final static double CLIMB_P = .05, CLIMB_I = 0.0025, CLIMB_D = 0.00;
 

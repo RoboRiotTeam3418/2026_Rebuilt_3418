@@ -14,14 +14,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ClimbCmd;
 import frc.robot.commands.ShootCmd;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
@@ -47,8 +44,8 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
-  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  private final ShootCmd shootCmd;
+  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  //private final ShootCmd shootCmd;
 
 
 
@@ -76,8 +73,8 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> (m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))) / 2,
-      () -> (m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))) / 2)
+      () -> (m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))),
+      () -> (m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))))
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
@@ -102,10 +99,10 @@ public class RobotContainer {
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    shootCmd = new ShootCmd(m_shooter);
+    //shootCmd = new ShootCmd(m_shooter);
 
-    NamedCommands.registerCommand("test", m_shooter.test());
-    NamedCommands.registerCommand("Shoot", shootCmd);
+    //NamedCommands.registerCommand("test", m_shooter.test());
+    //NamedCommands.registerCommand("Shoot", shootCmd);
   }
 
   /**
@@ -145,7 +142,7 @@ public class RobotContainer {
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    zeroGyroTrig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.1,0,0)));
+    m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
     trig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(0,.1,0)));
     /* Shooter stuff:
     m_primary.button(1).onChange(shooter.triggerThing());
