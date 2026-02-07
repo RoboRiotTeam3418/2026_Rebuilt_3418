@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
     static boolean trigger = false;
 
     SparkMax sparkMaxA, sparkMaxB;
-    AbsoluteEncoder encoderA, encoderB;
+    public AbsoluteEncoder encoderA, encoderB;
 
     public ShooterSubsystem() {
         Instance = this;
@@ -58,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /**
      * April tag position at hub (if seen)
-     * @return limelight horizontal offset to april tag at hub, clamped between -0.8 and 0.8
+     * @return limelight horizontal offset to april tag at hub
      */
     public DoubleSupplier aprilTagPos = () -> {
         if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0;
@@ -71,7 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
     };
 
     /**
-     * Calculates flywheel speed based on limelight data. If no target, returns 0.85
+     * Calculates flywheel speed based on limelight data. If no target, returns 0.7
      * @return flywheel speed (0.05 to 1)
      */
     public double limelightCalculator() {
@@ -108,16 +108,20 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public Command Shoot() {
         return run(() -> {
-            double beforeClamp = pidController.calculate(encoderA.getVelocity() / Constants.MAX_NEO_VORTEX_SPEED, getSetpoint.getAsDouble()) * 10;
-            //var setpoint = getSetpoint.getAsDouble();
-            //if (setpoint > 0)
-            //    System.out.println("ts: " + setpoint);
-
+            double beforeClamp = pidController.calculate(encoderA.getVelocity(), getSetpoint.getAsDouble()) * 10; // This has been tested and is safe for robot use
             double speed = MathUtils.clamp( beforeClamp, 0, 0.7);
 
-            sparkMaxA.set(speed);
-            sparkMaxB.set(speed); // facing same direction (as of 2026-01-24)
+            setSpeeds(speed);
         });
+    }
+
+    /**
+     * Sets the speed of both motors
+     * @param speed the target speed
+     */
+    public void setSpeeds(double speed) {
+        sparkMaxA.set(speed);
+        sparkMaxB.set(speed); 
     }
 
     /**
@@ -153,5 +157,10 @@ public class ShooterSubsystem extends SubsystemBase {
         if (DriverStation.isTestEnabled()) {
             System.out.println(objects);
         }
+    }
+        public Command test() {
+        return runOnce(() -> {
+            System.out.println("Hi");
+        });
     }
 }

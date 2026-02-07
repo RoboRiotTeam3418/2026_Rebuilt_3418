@@ -14,11 +14,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ShootCmd;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -43,11 +44,14 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
+  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  //private final ShootCmd shootCmd;
+
 
 
   // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
 
-  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * -1;
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
@@ -67,10 +71,11 @@ public class RobotContainer {
   () -> 0.0
   ).withControllerRotationAxis(followTag);
 
+  
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> m_primary.getY() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)),
-      () -> m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0)))
-      .withControllerRotationAxis(followTag)
+      () -> (m_primary.getY() * -(m_primary.getZ() - OperatorConstants.THRUST_SCALAR)),
+      () -> (m_primary.getX() * (m_primary.getZ() - OperatorConstants.THRUST_SCALAR)))
+      .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
 
@@ -93,10 +98,12 @@ public class RobotContainer {
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-  }
 
-  boolean triggerPressed = false;
+    //shootCmd = new ShootCmd(m_shooter);
+
+    //NamedCommands.registerCommand("test", m_shooter.test());
+    //NamedCommands.registerCommand("Shoot", shootCmd);
+  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
@@ -117,22 +124,20 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.drive(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);//drivebase.driveFieldOriented(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
     // create triggers for primary buttons
     // if joystick doesn't have the button you need
-    BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
-    Trigger zeroGyroTrig = new Trigger(zeroGyro);
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
+    BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
 
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    zeroGyroTrig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.1,0,0)));
-
+    m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
     /* Shooter stuff:
     m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());
@@ -152,7 +157,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;//todo:drivebase.getAutonomousCommand("New Auto");
+    return drivebase.getAutonomousCommand("New Auto");
   }
 
   public void setMotorBrake(boolean brake) {
