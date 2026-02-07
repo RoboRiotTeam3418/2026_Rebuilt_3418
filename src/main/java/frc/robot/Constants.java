@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -33,6 +34,7 @@ public final class Constants {
     public static final double LEFT_Y_DEADBAND = 0.15;
     public static final double RIGHT_X_DEADBAND = 0.15;
     public static final double TURN_CONSTANT = 6;
+    public static final double THRUST_SCALAR = (23.0 / 9.0) / (40.0 / 9.0);
   }
 
   public static final class DrivebaseConstants {
@@ -44,7 +46,7 @@ public final class Constants {
   /** The mass of the robot */
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-  public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
+  public static final double LOOP_TIME = 0.02; // s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
@@ -67,8 +69,6 @@ public final class Constants {
   public static final int LIMELIGHT_PIPELINE_ID = 0;
   /** Disables apriltag tracking :( */
   public static final boolean SAD_LIMELIGHT_MODE = false; //True for testing
-  /** Max neo vortex motor speed in rpm */
-  public static final double MAX_NEO_VORTEX_SPEED = 1;
 
   public static final class SubsystemConstants {
     public static final int SHOOTER_MOTOR_A = 0;

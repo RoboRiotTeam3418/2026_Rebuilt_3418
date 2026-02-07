@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCmd extends Command {
@@ -28,7 +27,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity() / Constants.MAX_NEO_VORTEX_SPEED, setpoint) * 10);
+        shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity(), setpoint) * 10);
     }
 
     // I should add finish logic but idk.

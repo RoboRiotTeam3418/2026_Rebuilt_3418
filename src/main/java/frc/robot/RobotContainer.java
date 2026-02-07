@@ -73,8 +73,8 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> (m_primary.getY() * -((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))),
-      () -> (m_primary.getX() * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0))))
+      () -> (m_primary.getY() * -(m_primary.getZ() - OperatorConstants.THRUST_SCALAR)),
+      () -> (m_primary.getX() * (m_primary.getZ() - OperatorConstants.THRUST_SCALAR)))
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .allianceRelativeControl(true);
@@ -130,8 +130,6 @@ public class RobotContainer {
     //drive team is aware of this
     // create triggers for primary buttons
     // if joystick doesn't have the button you need
-    BooleanSupplier zeroGyro = () -> m_primary.getHID().getRawButton(2);
-    Trigger zeroGyroTrig = new Trigger(zeroGyro);
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
