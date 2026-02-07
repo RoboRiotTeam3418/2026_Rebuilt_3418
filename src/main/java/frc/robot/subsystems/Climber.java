@@ -1,24 +1,35 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase{
-    SparkMax rotMotor;
-    SparkMax climbMotor;
-    AbsoluteEncoder rotEncoder;
+    SparkMax climb1;
+    DigitalInput top;
+    DigitalInput bottom;
 
     public Climber() {
-        rotMotor=new SparkMax(0, MotorType.kBrushless);
-        climbMotor= new SparkMax(0, MotorType.kBrushless);
-        rotEncoder=rotMotor.getAbsoluteEncoder();
+        climb1=new SparkMax(0, MotorType.kBrushless);
+        top=new DigitalInput(0);
+        bottom= new DigitalInput(1);
     }
 
-    public Command climb(double speed) {
-        return runOnce(()->{climbMotor.set(speed);});
+    public void climb(double speed) {
+        climb1.set(speed);
     }
-}
+    //2 means at top, 0 means at bottom, 1 means in motion
+    public int getHeight() {
+        if (top.get()) {
+            return 2;
+        } else if (bottom.get()) {
+            return 0;
+        }
+        return 1;
+    }
+    public double getCurrentDirection() {
+        return climb1.get();
+    }
+    }
