@@ -135,8 +135,6 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger trig = new Trigger(button);
 
-    // Auto Orient (I dont believe we need this - Darwin )
-
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);

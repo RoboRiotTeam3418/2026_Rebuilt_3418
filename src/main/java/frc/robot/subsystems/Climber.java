@@ -1,31 +1,35 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkAnalogSensor;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase{
     SparkMax climb1;
-    SparkMax climb2;
-    SparkAnalogSensor climbPot;
+    DigitalInput top;
+    DigitalInput bottom;
 
     public Climber() {
         climb1=new SparkMax(0, MotorType.kBrushless);
-        climb2= new SparkMax(0, MotorType.kBrushless);
-        climbPot=climb1.getAnalog();
+        top=new DigitalInput(0);
+        bottom= new DigitalInput(1);
     }
 
     public void climb(double speed) {
         climb1.set(speed);
-        climb2.set(-speed);
     }
-    //TODO get the proper positions of the string pot
-    public double getCurrentHeight() {
-        return climbPot.getPosition();
+    //2 means at top, 0 means at bottom, 1 means in motion
+    public int getHeight() {
+        if (top.get()) {
+            return 2;
+        } else if (bottom.get()) {
+            return 0;
+        }
+        return 1;
     }
-
-
-
-}
+    public double getCurrentDirection() {
+        return climb1.get();
+    }
+    }
