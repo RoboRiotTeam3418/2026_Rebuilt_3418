@@ -8,8 +8,6 @@ import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -18,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ShootCmd;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -124,7 +120,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);//drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this

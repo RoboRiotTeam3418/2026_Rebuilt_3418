@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
 import frc.robot.util.drivers.LimelightHelpers;
@@ -43,8 +44,8 @@ public class ShooterSubsystem extends SubsystemBase {
         /*pidController = new PIDController(p, i, d);
         pidController.setSetpoint(1);*/
 
-        sparkMaxA = new SparkMax(31, SparkMax.MotorType.kBrushless);
-        sparkMaxB = new SparkMax(32, SparkMax.MotorType.kBrushless);
+        sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
+        sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
 
         encoderA = sparkMaxA.getAbsoluteEncoder();
         encoderB = sparkMaxB.getAbsoluteEncoder();
