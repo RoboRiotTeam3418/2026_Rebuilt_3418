@@ -6,17 +6,17 @@
   "absoluteEncoderOffset": 20,
   "drive": {
     "type": "neo",
-    "id": 9,
-    "canbus": 9
+    "id": 7,
+    "canbus": 7
   },
   "angle": {
     "type": "neo",
-    "id": 8,
-    "canbus": 8
+    "id": 6,
+    "canbus": 6
   },
   "encoder": {
     "type": "analog",
-    "id": 2,
+    "id": 3,
     "canbus": null
   },
   "inverted": {
