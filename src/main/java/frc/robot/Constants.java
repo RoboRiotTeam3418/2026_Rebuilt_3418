@@ -71,5 +71,13 @@ public final class Constants {
     public static final int CLAW_ID = 2;
     public static final int ARM_ID = 22;
     public static final double SPIN_SPEED = 0.05; // placeholder value
+
+    // Intake ID's
+    public static final int INTAKEPIVOTID = 17;
+    public static final int INTAKEID = 18;
+
+    // Hopper ID's
+    public static final int HOPPER_AGITATORS = 19;
+    public static final int HOPPER_BOUNCER = 20;
   }
 }
