@@ -16,6 +16,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+<<<<<<< HEAD
+=======
+import frc.robot.commands.ShootCmd;
+import frc.robot.subsystems.ShooterSubsystem;
+>>>>>>> Devin-Climber
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -129,13 +134,11 @@ public class RobotContainer {
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
-    Trigger trig = new Trigger(button);
 
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
-    trig.whileTrue(drivebase.driveCmd(new ChassisSpeeds(0,.1,0)));
     /* Shooter stuff:
     m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());
