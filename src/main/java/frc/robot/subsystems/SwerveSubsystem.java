@@ -28,7 +28,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -64,7 +66,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
    public SwerveSubsystem(File directory)
   { 
-    boolean blueAlliance = false;
+    
+    boolean blueAlliance = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue; // Defaults to red when no game is running
     Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(0))
@@ -80,17 +83,16 @@ public class SwerveSubsystem extends SubsystemBase
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
     {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e); // AI mentor assistor, this is infact safe, since the json should always exist and if it doesnt it needs to exist.
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
-    swerveDrive.setModuleEncoderAutoSynchronize(false,
-                                                1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
+    swerveDrive.setModuleEncoderAutoSynchronize(false, 3); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-
+    swerveDrive.useInternalFeedbackSensor();
     setupPathPlanner();
   }
 
@@ -112,6 +114,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
+    //System.out.println(swerveDrive.getModules()[2].getAbsolutePosition());
   }
 
   @Override
@@ -187,7 +190,8 @@ public class SwerveSubsystem extends SubsystemBase
 
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-    PathfindingCommand.warmupCommand().schedule();
+    CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand());
+    //PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
@@ -324,7 +328,7 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @return a Command that tells the robot to drive forward until the command ends
    */
-  public Command driveForward()
+  public Command driveForward() // To any reviewing this code: this is safe and is mostly used for debugging / testing.
   {
     return run(() -> {
       swerveDrive.drive(new Translation2d(1, 0), 0, false, false);
@@ -414,6 +418,13 @@ public class SwerveSubsystem extends SubsystemBase
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
+  public Command drive(Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      swerveDrive.drive(speeds.get());
+    });
+  }
+
   /**
    * Drive the robot given a chassis field oriented velocity.
    *
@@ -432,6 +443,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
+      //System.out.println(velocity.get());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }
@@ -504,6 +516,17 @@ public class SwerveSubsystem extends SubsystemBase
   public void zeroGyro()
   {
     swerveDrive.zeroGyro();
+  }
+
+  /**
+   * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
+   */
+  public Command zeroGyroCmd()
+  {
+    return runOnce(() -> {
+      zeroGyro();
+      swerveDrive.getGyro().setInverted(true);
+    });
   }
 
   /**
@@ -669,7 +692,7 @@ public class SwerveSubsystem extends SubsystemBase
   public ChassisSpeeds getDeath() {
     return new ChassisSpeeds(0, 0, getSwerveDrive().getMaximumChassisAngularVelocity());
   }
-    public Command driveCmd(ChassisSpeeds speeds) {
+  public Command driveCmd(ChassisSpeeds speeds) {
     return run(
         () -> {
           drive(speeds);

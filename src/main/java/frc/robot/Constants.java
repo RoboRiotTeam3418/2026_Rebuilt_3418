@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -33,6 +34,7 @@ public final class Constants {
     public static final double LEFT_Y_DEADBAND = 0.15;
     public static final double RIGHT_X_DEADBAND = 0.15;
     public static final double TURN_CONSTANT = 6;
+    public static final double THRUST_SCALAR = ((23.0 / 9.0) / (40.0 / 9.0))/2;
   }
 
   public static final class DrivebaseConstants {
@@ -41,12 +43,12 @@ public final class Constants {
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
 
+  /** The mass of the robot */
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-  public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
+  public static final double LOOP_TIME = 0.02; // s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
   // Maximum speed of the robot in meters per second, used to limit acceleration.
-  public static final double ARM_ANGLE = 53.0; // angle between straight up arm and placing arm
 
   // all this stuff is important I think?
   public static final double X_REEF_ALIGNMENT_P = 3.3;
@@ -63,14 +65,12 @@ public final class Constants {
   public static final double DONT_SEE_TAG_WAIT_TIME = 1;
   public static final double POSE_VALIDATION_TIME = 0.3;
 
+  /** The limelight pipeline id to be used with the limelight */
+  public static final int LIMELIGHT_PIPELINE_ID = 0;
+  /** Disables apriltag tracking :( */
+  public static final boolean SAD_LIMELIGHT_MODE = false; //True for testing
+
   public static final class SubsystemConstants {
-    // not drivebase constants
-    public static final int ELEVMOT1ID = 20;
-    public static final int ELEVMOT2ID = 21;
-    public static final int GAMEPIECE_SENSOR_ID = 0;
-    public static final int CLAW_ID = 2;
-    public static final int ARM_ID = 22;
-    public static final double SPIN_SPEED = 0.05; // placeholder value
 
     // Intake ID's
     public static final int INTAKEPIVOTID = 17;
