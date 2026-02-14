@@ -69,10 +69,11 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> (m_primary.getY() * -(m_primary.getZ() - OperatorConstants.THRUST_SCALAR)),
-      () -> (m_primary.getX() * (m_primary.getZ() - OperatorConstants.THRUST_SCALAR)))
+      () -> (-m_primary.getY()/2),
+      () -> (-m_primary.getX()/2))
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(.8)
       .allianceRelativeControl(true);
 
 
@@ -129,7 +130,8 @@ public class RobotContainer {
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
-
+    Trigger Button = new Trigger(button);
+    Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
