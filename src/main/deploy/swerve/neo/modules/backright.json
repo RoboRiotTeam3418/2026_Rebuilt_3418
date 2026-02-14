@@ -15,7 +15,7 @@
     "canbus": 6
   },
   "encoder": {
-    "type": "analog",
+    "type": "sparkmax_analog",
     "id": 3,
     "canbus": null
   },
