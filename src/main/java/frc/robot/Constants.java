@@ -71,12 +71,18 @@ public final class Constants {
   public static final boolean SAD_LIMELIGHT_MODE = false; //True for testing
 
   public static final class SubsystemConstants {
+    // Shooter IDs
+    public static final int SHOOTER_MOTOR_A = 14;
+    public static final int SHOOTER_MOTOR_B = 15;
 
-    // Intake ID's
+    //Climber ID
+    public static final int CLIMBER_MOTOR=12;
+
+    // Intake IDs
     public static final int INTAKEPIVOTID = 17;
     public static final int INTAKEID = 18;
 
-    // Hopper ID's
+    // Hopper IDs
     public static final int HOPPER_AGITATORS = 19;
     public static final int HOPPER_BOUNCER = 20;
   }

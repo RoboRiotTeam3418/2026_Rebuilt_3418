@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SubsystemConstants;
 
 public class Climber extends SubsystemBase{
     SparkMax climb1;
@@ -12,7 +13,7 @@ public class Climber extends SubsystemBase{
     DigitalInput bottom;
 
     public Climber() {
-        climb1=new SparkMax(0, MotorType.kBrushless);
+        climb1=new SparkMax(SubsystemConstants.CLIMBER_MOTOR, MotorType.kBrushless);
         top=new DigitalInput(0);
         bottom= new DigitalInput(1);
     }
