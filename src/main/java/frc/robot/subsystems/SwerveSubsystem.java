@@ -443,7 +443,6 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
-      //System.out.println(velocity.get());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }

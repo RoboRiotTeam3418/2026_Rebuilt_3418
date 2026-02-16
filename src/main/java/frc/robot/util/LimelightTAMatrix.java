@@ -32,7 +32,7 @@ public class LimelightTAMatrix {
     Usage:
 
     if (LimelightHelpers.getTV("limelight")) {
-        ta = LimelightTAMatrix.get(LimelightHelpers.getTA("limelight")); 
+        double dist = LimelightTAMatrix.get(LimelightHelpers.getTA("limelight")); 
     }
     
     */
