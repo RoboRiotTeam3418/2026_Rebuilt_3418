@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 // Software
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // Hardware (software)
@@ -20,13 +22,15 @@ public class intakeSubsystem extends SubsystemBase {
 
     // Intake
     private SparkMax IntakeMotor; // This probably doesn't need to be public.
+    private AbsoluteEncoder iMEncoder; // Are there any software differences between the throughbore encoder and the built in encoder?
 
     // Constructor
     public intakeSubsystem() {
-        pivotMotor = new SparkMax(17, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
+        pivotMotor = new SparkMax(Constants.SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless);
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 
-        IntakeMotor = new SparkMax(18, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
+        IntakeMotor = new SparkMax(Constants.SubsystemConstants.INTAKEID, MotorType.kBrushless);
+        iMEncoder = IntakeMotor.getAbsoluteEncoder();
     }
 
     /*

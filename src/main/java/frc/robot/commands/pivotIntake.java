@@ -2,6 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
+
+DO NOT RUN THIS CODE, IT IS UNFINSIHED AND WILL DESTROY THE INTAKE!!!
+DO NOT RUN THIS CODE, IT IS UNFINSIHED AND WILL DESTROY THE INTAKE!!!
+DO NOT RUN THIS CODE, IT IS UNFINSIHED AND WILL DESTROY THE INTAKE!!!
+
+*/
+
 package frc.robot.commands;
 
 //import swervelib.SwerveDrive;
@@ -29,24 +37,28 @@ public class pivotIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.pivotMotor.set(intakeSpeed);
+    if (m_Intake.ThroughboreEncoder.getPosition() < MAX_ANGLE_IN && m_Intake.ThroughboreEncoder.getPosition() > MAX_ANGLE_OUT){
+      m_Intake.pivotMotor.set(intakeSpeed);
+    } else {
+      m_Intake.pivotMotor.set(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    // I plan to have this reset the state of the intake to be inside the robot in the future. (maybe)
+    m_Intake.pivotMotor.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true; // just in case this code is ran (it isn't supposed to be run)
   }
 }
