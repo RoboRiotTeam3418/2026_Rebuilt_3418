@@ -23,12 +23,6 @@ public class pivotIntake extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final intakeSubsystem m_Intake; // Subsystem
 
-  //Constants (maybe move over to Constants.java later)
-  private final double MAX_ANGLE_IN = 0; // Maximum angle of intake based on interior of robot (placeholder)
-  private final double MAX_ANGLE_OUT = 0; // Maximum angle of intake based on exterior of robot (placeholder)
-  private final double intakeSpeed = 0.5; // Constant pivot speed
-
-
   public pivotIntake(intakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
     this.m_Intake = intake;
     addRequirements(intake); // Use addRequirements() here to declare subsystem dependencies.
@@ -42,23 +36,26 @@ public class pivotIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Intake.ThroughboreEncoder.getPosition() < MAX_ANGLE_IN && m_Intake.ThroughboreEncoder.getPosition() > MAX_ANGLE_OUT){
-      m_Intake.pivotMotor.set(intakeSpeed);
+    if (m_Intake.ThroughboreEncoder.getPosition() > m_Intake.MAX_ANGLE_IN && m_Intake.ThroughboreEncoder.getPosition() < m_Intake.MAX_ANGLE_OUT){ // Soft stop
+      if (m_Intake.ThroughboreEncoder.getPosition() <= m_Intake.MAX_ANGLE_IN + 10 || m_Intake.ThroughboreEncoder.getPosition() <= m_Intake.MAX_ANGLE_OUT - 10){
+        m_Intake.pivotMotor.set(m_Intake.pivotSpeed/2); // Speed is halved when getting closer to max limits
+      } else {
+        m_Intake.pivotMotor.set(m_Intake.pivotSpeed); // If all checks are passed, move normally
+      }
     } else {
-      m_Intake.pivotMotor.set(0);
+      m_Intake.pivotMotor.set(0); // If first check fails, don't do anything
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // I plan to have this reset the state of the intake to be inside the robot in the future. (maybe)
-    m_Intake.pivotMotor.set(0);
+    //m_Intake.pivotMotor.set(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true; // just in case this code is ran (it isn't supposed to be run)
+    return true; // just in case this code is ran (it isn't supposed to be run yet)
   }
 }

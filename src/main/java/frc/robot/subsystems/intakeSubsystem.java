@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import edu.wpi.first.wpilibj.Encoder; (not used?)
-//import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax; (also not used)
 
 
 public class intakeSubsystem extends SubsystemBase {
@@ -23,6 +21,11 @@ public class intakeSubsystem extends SubsystemBase {
     // Intake
     private SparkMax IntakeMotor; // This probably doesn't need to be public.
     private AbsoluteEncoder iMEncoder; // Are there any software differences between the throughbore encoder and the built in encoder?
+
+    //Constants (maybe move over to Constants.java later)
+    public final double MAX_ANGLE_IN = 0; // Maximum angle of intake based on interior of robot (placeholder value)
+    public final double MAX_ANGLE_OUT = 0; // Maximum angle of intake based on exterior of robot (placeholder value)
+    public final double pivotSpeed = 0.5; // Constant pivot speed
 
     // Constructor
     public intakeSubsystem() {
@@ -41,14 +44,29 @@ public class intakeSubsystem extends SubsystemBase {
            you probably already saw it though.
     */
     
-    public Command intake(double speed) {
-    /**
-     * This subsystem should have its default command set to this command with a Speed of 0. 
-     * This probably should be done in RobotContainer.
-     */
+    public Command intake(double speed) { // Run the intake
         return run(() -> {                       
             IntakeMotor.set(speed);
         });
+    }
+
+    public Command intakeResetCommand() { // Don't bind this command to any trigger.
+
+    /**
+     * This subsystem should have its default command set to this command.
+     * This probably should be done in RobotContainer.
+     */
+
+      return run(() -> {
+        IntakeMotor.set(0);
+        if (ThroughboreEncoder.getPosition() > MAX_ANGLE_IN){
+          if (ThroughboreEncoder.getPosition() < MAX_ANGLE_IN +10){
+            pivotMotor.set(-pivotSpeed);
+          } else {
+            pivotMotor.set(-pivotSpeed);
+          }
+        }
+      });
     }
 
     /**
