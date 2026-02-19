@@ -144,8 +144,6 @@ public class RobotContainer {
     // Primary Driver
 
     deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
-    // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
-    // drivebase).repeatedly());
   }
 
   /**

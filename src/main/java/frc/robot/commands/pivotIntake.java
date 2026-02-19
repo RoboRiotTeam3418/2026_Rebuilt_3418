@@ -7,6 +7,7 @@ package frc.robot.commands;
 //import swervelib.SwerveDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.intakeSubsystem;
 
 
@@ -15,10 +16,7 @@ public class pivotIntake extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final intakeSubsystem m_Intake; // Subsystem
 
-  //Constants (maybe move over to Constants.java later)
-  private final double MAX_ANGLE_IN = 0; // Maximum angle of intake based on interior of robot (placeholder)
-  private final double MAX_ANGLE_OUT = 0; // Maximum angle of intake based on exterior of robot (placeholder)
-  private final double intakeSpeed = 0.5; // Constant pivot speed
+  // I moved these to constants -Darwin
 
 
   public pivotIntake(intakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
@@ -35,7 +33,7 @@ public class pivotIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.pivotMotor.set(intakeSpeed);
+    m_Intake.pivotMotor.set(SubsystemConstants.INTAKE_PIVOT_SPEED);
   }
 
   // Called once the command ends or is interrupted.
