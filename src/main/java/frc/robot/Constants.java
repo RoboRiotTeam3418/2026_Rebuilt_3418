@@ -77,4 +77,12 @@ public final class Constants {
     public static final int HOPPER_AGITATORS = 19;
     public static final int HOPPER_BOUNCER = 20;
   }
+
+  public static final class AprilTagConstants {
+
+
+    // IDs
+    public static final int HUB_CENTER_BLUE = 10;
+    public static final int HUB_CENTER_RED = 26;
+  }
 }
