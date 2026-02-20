@@ -61,7 +61,7 @@ public class intakeSubsystem extends SubsystemBase {
         IntakeMotor.set(0);
         if (ThroughboreEncoder.getPosition() > MAX_ANGLE_IN){
           if (ThroughboreEncoder.getPosition() < MAX_ANGLE_IN +10){
-            pivotMotor.set(-pivotSpeed);
+            pivotMotor.set(-pivotSpeed/2);
           } else {
             pivotMotor.set(-pivotSpeed);
           }
