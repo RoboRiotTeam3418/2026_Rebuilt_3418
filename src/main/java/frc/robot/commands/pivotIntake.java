@@ -13,17 +13,16 @@ DO NOT RUN THIS CODE, IT IS UNFINSIHED AND COULD POSSIBLY DAMAGE THE ROBOT!!!
 package frc.robot.commands;
 
 //import swervelib.SwerveDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.intakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 
 /** An example command that uses an example subsystem. */
 public class pivotIntake extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final intakeSubsystem m_Intake; // Subsystem
+  private final IntakeSubsystem m_Intake; // Subsystem
 
-  public pivotIntake(intakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
+  public pivotIntake(IntakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
     this.m_Intake = intake;
     addRequirements(intake); // Use addRequirements() here to declare subsystem dependencies.
   }

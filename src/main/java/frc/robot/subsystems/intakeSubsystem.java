@@ -13,10 +13,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 
-public class intakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     // Pivot
-    public SparkMax pivotMotor; 
-    public AbsoluteEncoder ThroughboreEncoder;
+    public SparkMax pivotMotor; // needs to be public for commands to access
+    public AbsoluteEncoder ThroughboreEncoder; // needs to be public for commands to access
 
     // Intake
     private SparkMax IntakeMotor; // This probably doesn't need to be public.
@@ -24,11 +24,11 @@ public class intakeSubsystem extends SubsystemBase {
 
     //Constants (maybe move over to Constants.java later)
     public final double MAX_ANGLE_IN = 0; // Maximum angle of intake based on interior of robot (placeholder value)
-    public final double MAX_ANGLE_OUT = 0; // Maximum angle of intake based on exterior of robot (placeholder value)
-    public final double pivotSpeed = 0.5; // Constant pivot speed
+    public final double MAX_ANGLE_OUT = 10; // Maximum angle of intake based on exterior of robot (placeholder value)
+    public final double pivotSpeed = 0.05; // Constant pivot  (Set to a very low value for testing)
 
     // Constructor
-    public intakeSubsystem() {
+    public IntakeSubsystem() {
         pivotMotor = new SparkMax(Constants.SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless);
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 
@@ -44,7 +44,7 @@ public class intakeSubsystem extends SubsystemBase {
            you probably already saw it though.
     */
     
-    public Command intake(double speed) { // Run the intake
+    public Command intakeCmd(double speed) { // Run the intake
         return run(() -> {                       
             IntakeMotor.set(speed);
         });

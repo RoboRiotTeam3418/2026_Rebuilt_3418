@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Newton;
+
 import java.io.File;
+import java.security.PrivateKey;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoOrientCmd;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -39,8 +43,8 @@ public class RobotContainer {
 
   // Driver speeds
 
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-      "swerve/neo"));
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled
@@ -97,6 +101,8 @@ public class RobotContainer {
     Trigger zeroGyroTrig = new Trigger(zeroGyro);
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
+    BooleanSupplier intakeButton = () -> m_primary.getHID().getRawButton(5);
+    Trigger intakeTrig = new Trigger(intakeButton);
 
     // Auto Orient (I dont believe we need this - Darwin )
     m_primary.axisGreaterThan(6, .5).whileTrue(new AutoOrientCmd(drivebase, 2, 4.25, -3.9, 2));
@@ -108,6 +114,7 @@ public class RobotContainer {
 
     // Primary Driver
     deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
+    intakeTrig.whileTrue(intakeSubsystem.intakeCmd(0.25));
     // fullStopTrig.whileTrue(Commands.runOnce(drivebase::lock,
     // drivebase).repeatedly());
   }
