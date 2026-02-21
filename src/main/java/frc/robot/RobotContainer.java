@@ -40,12 +40,9 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
-  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  //private final Feeder m_feeder = new Feeder();
+  //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
-
-
-
-  // More shooter stuff: private final ShooterSubsystem shooter = new ShooterSubsystem();
 
   public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
   public DoubleSupplier followTag = () -> {
