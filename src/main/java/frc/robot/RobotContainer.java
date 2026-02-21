@@ -17,12 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
-<<<<<<< HEAD
 import frc.robot.commands.pivotIntake;
-=======
 import frc.robot.commands.ManualClimbCmd;
 import frc.robot.subsystems.Climber;
->>>>>>> origin/master
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.util.LimelightTAMatrix;
@@ -48,11 +45,8 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
-<<<<<<< HEAD
   private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
-=======
   private final Climber m_Climber = new Climber();
->>>>>>> origin/master
   //private final Feeder m_feeder = new Feeder();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
@@ -142,14 +136,8 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger Button = new Trigger(button);
     Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-<<<<<<< HEAD
-
-    /*BooleanSupplier intakeOn = () -> m_primary.getHID().getRawButton(5);
-    Trigger Intaketrig = new Trigger(intakeOn);*/
-=======
     m_secondary.axisGreaterThan(1, .5).whileTrue(new ManualClimbCmd(m_Climber, .1));
     m_secondary.axisLessThan(1, -.5).whileTrue(new ManualClimbCmd(m_Climber, -.1));
->>>>>>> origin/master
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
