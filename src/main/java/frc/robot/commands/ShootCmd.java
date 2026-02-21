@@ -21,7 +21,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void initialize() {
-        pid = new PIDController(shooter.p, shooter.i, shooter.d);
+        pid = shooter.pidController;
         pid.setSetpoint(setpoint);
     }
 
@@ -30,5 +30,8 @@ public class ShootCmd extends Command {
         shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity(), setpoint) * 10); // This should never be ran at the same time as ShooterSubsystem, this is for auto use only
     }
 
-    // I should add finish logic but idk.
+    @Override
+    public void end(boolean interrupted) {
+        shooter.setSpeeds(0);
+    }
 }

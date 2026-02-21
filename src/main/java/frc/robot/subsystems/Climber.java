@@ -19,6 +19,8 @@ public class Climber extends SubsystemBase{
     }
 
     public void climb(double speed) {
+        if (speed > 0 && top.get()) speed = 0;
+        if (speed < 0 && bottom.get()) speed = 0;
         climb1.set(speed);
     }
     //2 means at top, 0 means at bottom, 1 means in motion

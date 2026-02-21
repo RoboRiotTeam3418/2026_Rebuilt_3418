@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
@@ -44,7 +45,7 @@ public class RobotContainer {
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
 
-  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - (23.0 / 9.0)) / (40.0 / 9.0));
+  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - OperatorConstants.THRUST_SCALAR));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));

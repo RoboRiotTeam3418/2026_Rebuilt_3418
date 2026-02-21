@@ -14,16 +14,16 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax; (also not used)
 
 
-public class intakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     // Pivot
-    public SparkMax pivotMotor; 
-    public AbsoluteEncoder ThroughboreEncoder;
+    private SparkMax pivotMotor; 
+    private AbsoluteEncoder ThroughboreEncoder;
 
     // Intake
     private SparkMax IntakeMotor; // This probably doesn't need to be public.
 
     // Constructor
-    public intakeSubsystem() {
+    public IntakeSubsystem() {
         pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 
@@ -62,7 +62,7 @@ public class intakeSubsystem extends SubsystemBase {
   public void periodic() {
     // good info (tasty)
     SmartDashboard.putNumber("intakePivot Encoder Angle", ThroughboreEncoder.getPosition()); // might rename this (dunno)
-
+    // as of now, this is temporary since we dont have hopper ai mentor assistant.
   }
 
   @Override
