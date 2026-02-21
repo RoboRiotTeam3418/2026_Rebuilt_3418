@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ManualClimbCmd;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -34,18 +36,19 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  CommandJoystick m_primary = Constants.OperatorConstants.PRIMARY;
+  CommandXboxController m_primary = Constants.OperatorConstants.PRIMARY;
   CommandXboxController m_secondary = Constants.OperatorConstants.SECONDARY;
 
   // Driver speeds
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
+  private final Climber m_Climber = new Climber();
   //private final Feeder m_feeder = new Feeder();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
 
-  public DoubleSupplier getPosTwist = () -> m_primary.getRawAxis(5) * ((m_primary.getZ() - OperatorConstants.THRUST_SCALAR));
+  public DoubleSupplier getPosTwist = () -> -m_primary.getLeftX()/2;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
@@ -67,8 +70,8 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> (-m_primary.getY()/2),
-      () -> (-m_primary.getX()/2))
+      () -> (-m_primary.getRightY()/2),
+      () -> (-m_primary.getRightX()/2))
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(.8)
@@ -80,9 +83,9 @@ public class RobotContainer {
    * input stream.
    */
   
-  public DoubleSupplier getNegTwist = () -> m_primary.getTwist();
+  public DoubleSupplier getNegTwist = () -> m_primary.getLeftX();
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
-      .withControllerHeadingAxis(m_primary::getTwist, getNegTwist)// checkfunction
+      .withControllerHeadingAxis(m_primary::getLeftX, getNegTwist)// checkfunction
       .headingWhile(true);
 
   /**
@@ -130,6 +133,8 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger Button = new Trigger(button);
     Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
+    m_secondary.axisGreaterThan(1, .5).whileTrue(new ManualClimbCmd(m_Climber, .1));
+    m_secondary.axisLessThan(1, -.5).whileTrue(new ManualClimbCmd(m_Climber, -.1));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
