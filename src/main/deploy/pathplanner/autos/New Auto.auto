@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "straight to reef left"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "place right"
-                }
-              }
-            ]
+            "pathName": "Example Path"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "to pickup left"
+            "name": "test"
           }
         }
       ]

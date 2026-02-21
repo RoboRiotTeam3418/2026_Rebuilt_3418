@@ -3,8 +3,7 @@ package frc.robot.subsystems;
 // Software
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.Encoder;
+import frc.robot.Constants.SubsystemConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // Hardware (software)
@@ -29,11 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Constructor
     public IntakeSubsystem() {
-        pivotMotor = new SparkMax(Constants.SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless);
+        pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 
-        IntakeMotor = new SparkMax(Constants.SubsystemConstants.INTAKEID, MotorType.kBrushless);
-        iMEncoder = IntakeMotor.getAbsoluteEncoder();
+        IntakeMotor = new SparkMax(SubsystemConstants.INTAKEID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
     }
 
     /*
@@ -83,7 +81,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // good info (tasty)
     SmartDashboard.putNumber("intakePivot Encoder Angle", ThroughboreEncoder.getPosition()); // might rename this (dunno)
-
+    // as of now, this is temporary since we dont have hopper ai mentor assistant.
   }
 
   @Override

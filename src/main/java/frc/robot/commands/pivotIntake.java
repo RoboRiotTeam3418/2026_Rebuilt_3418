@@ -14,6 +14,7 @@ package frc.robot.commands;
 
 //import swervelib.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
@@ -21,6 +22,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class pivotIntake extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final IntakeSubsystem m_Intake; // Subsystem
+
+  // I moved these to constants -Darwin
+
 
   public pivotIntake(IntakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
     this.m_Intake = intake;
