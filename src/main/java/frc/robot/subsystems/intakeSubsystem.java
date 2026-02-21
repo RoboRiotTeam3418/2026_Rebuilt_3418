@@ -14,16 +14,16 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax; (also not used)
 
 
-public class IntakeSubsystem extends SubsystemBase {
+public class intakeSubsystem extends SubsystemBase {
     // Pivot
-    private SparkMax pivotMotor; 
-    private AbsoluteEncoder ThroughboreEncoder;
+    public SparkMax pivotMotor; 
+    public AbsoluteEncoder ThroughboreEncoder;
 
     // Intake
-    private SparkMax IntakeMotor; // This probably doesn't need to be public.
+    public SparkMax IntakeMotor; // This probably doesn't need to be public.
 
     // Constructor
-    public IntakeSubsystem() {
+    public intakeSubsystem() {
         pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 

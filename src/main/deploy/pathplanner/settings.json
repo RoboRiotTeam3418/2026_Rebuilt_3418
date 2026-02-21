@@ -11,7 +11,7 @@
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 59.27,
+  "robotMass": 39.0,
   "robotMOI": 6.833,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.05,
@@ -30,5 +30,7 @@
   "brModuleY": -0.2794,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.32},\"size\":{\"width\":0.18,\"length\":0.18},\"borderRadius\":0.0,\"strokeWidth\":0.01,\"filled\":false}}"
+  ]
 }
