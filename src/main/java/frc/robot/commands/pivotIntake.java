@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 //import swervelib.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.intakeSubsystem;
 
@@ -16,10 +17,11 @@ public class pivotIntake extends Command {
   private final intakeSubsystem m_Intake; // Subsystem
 
   // I moved these to constants -Darwin
+  double spd;
 
-
-  public pivotIntake(intakeSubsystem intake) { // Constructor | Creates new intakeSubsystem Command
+  public pivotIntake(intakeSubsystem intake, double speed) { // Constructor | Creates new intakeSubsystem Command
     this.m_Intake = intake;
+    this.spd = speed;
     addRequirements(intake); // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,13 +34,20 @@ public class pivotIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_Intake.pivotMotor.set(SubsystemConstants.INTAKE_PIVOT_SPEED);
+    if (m_Intake.ThroughboreEncoder.getPosition() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd>0) {
+      m_Intake.pivotMotor.set(0); // Motor shouldn't be running once these constants are reached.
+    } else if (m_Intake.ThroughboreEncoder.getPosition() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd<0){
+      m_Intake.pivotMotor.set(0);
+    } else {
+      m_Intake.pivotMotor.set(SubsystemConstants.INTAKE_PIVOT_SPEED);
+    }
+    System.out.println(m_Intake.ThroughboreEncoder.getPosition());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_Intake.pivotMotor.set(0);
   }
 
   // Returns true when the command should end.

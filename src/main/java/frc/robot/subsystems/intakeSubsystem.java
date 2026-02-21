@@ -38,7 +38,7 @@ public class intakeSubsystem extends SubsystemBase {
            you probably already saw it though.
     */
     
-    public Command intake(double speed) {
+    public Command intakeCMD(double speed) {
     /**
      * This subsystem should have its default command set to this command with a Speed of 0. 
      * This probably should be done in RobotContainer.

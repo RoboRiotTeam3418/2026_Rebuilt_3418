@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.pivotIntake;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.util.LimelightTAMatrix;
 import frc.robot.util.ShooterDistanceMatrix;
 import frc.robot.util.drivers.LimelightHelpers;
@@ -41,6 +43,7 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
+  private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
   //private final Feeder m_feeder = new Feeder();
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
@@ -130,12 +133,25 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger Button = new Trigger(button);
     Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
+
+    /*BooleanSupplier intakeOn = () -> m_primary.getHID().getRawButton(5);
+    Trigger Intaketrig = new Trigger(intakeOn);*/
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
+    //m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
+
+    Trigger Intaketrig=m_secondary.axisGreaterThan(2, .25);
+    Trigger extakeTrig =m_secondary.leftBumper();
+    Trigger pivotIntake =m_secondary.rightBumper(); // A test
+    Trigger pivotOuttake =m_secondary.axisGreaterThan(3,0.25); // A test
+    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,0.5));
+    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-0.5));
+    Intaketrig.whileTrue(intakeSubsystem.intakeCMD(-0.25));
+    extakeTrig.whileTrue(intakeSubsystem.intakeCMD(.5));
+    Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));
     /* Shooter stuff:
-    m_primary.button(1).onChange(shooter.triggerThing());
+        m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());
     */
 
