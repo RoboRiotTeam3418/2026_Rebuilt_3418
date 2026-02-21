@@ -8,6 +8,8 @@ import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -95,6 +97,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, -.2, true));
+    NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, .2, true));
     configureBindings();
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
@@ -136,8 +140,8 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger Button = new Trigger(button);
     Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    m_secondary.axisGreaterThan(1, .5).whileTrue(new ManualClimbCmd(m_Climber, .1));
-    m_secondary.axisLessThan(1, -.5).whileTrue(new ManualClimbCmd(m_Climber, -.1));
+    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
+    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
@@ -147,8 +151,8 @@ public class RobotContainer {
     Trigger extakeTrig =m_secondary.leftBumper();
     Trigger pivotIntake =m_secondary.rightBumper(); // A test
     Trigger pivotOuttake =m_secondary.axisGreaterThan(3,0.25); // A test
-    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,0.5));
-    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-0.5));
+    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,1.0));
+    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-1.0));
     Intaketrig.whileTrue(intakeSubsystem.intakeCMD(-0.25));
     extakeTrig.whileTrue(intakeSubsystem.intakeCMD(.5));
     Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));

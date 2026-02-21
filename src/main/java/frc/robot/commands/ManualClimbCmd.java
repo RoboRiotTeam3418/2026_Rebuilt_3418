@@ -6,10 +6,12 @@ import frc.robot.subsystems.Climber;
 public class ManualClimbCmd extends Command {
     private Climber climb;
     private double moveSpeed;
+    private boolean shouldEnd;
 
-    public ManualClimbCmd(Climber subsystem,double speed) { // Sets everything up
+    public ManualClimbCmd(Climber subsystem,double speed, boolean auto) { // Sets everything up
         this.climb = subsystem;
         this.moveSpeed = speed;
+        this.shouldEnd = auto;
         addRequirements(subsystem);
     }
 
@@ -20,14 +22,22 @@ public class ManualClimbCmd extends Command {
 
     @Override
     public void execute() {
+        if (climb.getMotorPos()<-30&&moveSpeed<0) {
+            climb.climb(0);
+        } else if (climb.getMotorPos()>2.5&&moveSpeed>0) {
+            climb.climb(0);
+        } else {
         climb.climb(moveSpeed);
+        }
+                System.out.println(climb.getMotorPos());
     }
     @Override//if it's at the right point
     public boolean isFinished() {
-        return false;
+        return (shouldEnd&&((climb.getMotorPos()<-30&&moveSpeed<0)||(climb.getMotorPos()>2.5&&moveSpeed>0)));
     }
     @Override
     public void end(boolean interrupted) {
         climb.climb(0);
+        System.out.println("done");
     }
 }

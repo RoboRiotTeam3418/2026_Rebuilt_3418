@@ -32,6 +32,9 @@ public class Climber extends SubsystemBase{
         }
         return 1;
     }*/
+    public double getMotorPos() {
+        return climb1.getEncoder().getPosition();
+    }
     public double getCurrentDirection() {
         return climb1.get();
     }

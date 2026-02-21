@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Example Path"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Example Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ready climber"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "test"
+            "name": "climb"
           }
         }
       ]
