@@ -3,7 +3,7 @@
     "front": -10,
     "left": -10
   },
-  "absoluteEncoderOffset": 240,
+  "absoluteEncoderOffset": 249,
   "drive": {
     "type": "neo",
     "id": 7,

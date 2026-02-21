@@ -1,9 +1,9 @@
 {
   "location": {
-    "front": -10,
+    "front": 10,
     "left": 10
   },
-  "absoluteEncoderOffset": 242,
+  "absoluteEncoderOffset": 350,
   "drive": {
     "type": "neo",
     "id": 5,

@@ -26,8 +26,8 @@ import swervelib.math.Matter;
 public final class Constants {
 
   public static class OperatorConstants {
-    public static final CommandJoystick PRIMARY = new CommandJoystick(1);
-    public static final CommandXboxController SECONDARY = new CommandXboxController(0);
+    public static final CommandXboxController PRIMARY = new CommandXboxController(0);
+    public static final CommandXboxController SECONDARY = new CommandXboxController(1);
 
     // Joystick Deadband
     public static final double DEADBAND = 0.15;
