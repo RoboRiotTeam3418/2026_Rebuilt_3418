@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -140,8 +141,8 @@ public class RobotContainer {
     BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
     Trigger Button = new Trigger(button);
     Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
-    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));
+    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,false));
+    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,false));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
@@ -149,13 +150,9 @@ public class RobotContainer {
 
     Trigger Intaketrig=m_secondary.axisGreaterThan(2, .25);
     Trigger extakeTrig =m_secondary.leftBumper();
-    Trigger pivotIntake =m_secondary.rightBumper(); // A test
-    Trigger pivotOuttake =m_secondary.axisGreaterThan(3,0.25); // A test
-    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,1.0));
-    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-1.0));
-    Intaketrig.whileTrue(intakeSubsystem.intakeCMD(-0.25));
-    extakeTrig.whileTrue(intakeSubsystem.intakeCMD(.5));
-    Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(-0.25)));
+    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(.5)));
+    Intaketrig.whileFalse(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,-.4),intakeSubsystem.intakeCMD(0))).and(extakeTrig.whileFalse(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,-.4),intakeSubsystem.intakeCMD(0))));
     /* Shooter stuff:
         m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());

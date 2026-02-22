@@ -22,22 +22,21 @@ public class ManualClimbCmd extends Command {
 
     @Override
     public void execute() {
-        if (climb.getMotorPos()<-30&&moveSpeed<0) {
+        if (climb.getMotorPos()>-6&&moveSpeed>0) {
             climb.climb(0);
-        } else if (climb.getMotorPos()>2.5&&moveSpeed>0) {
+        } else if (climb.getMotorPos()<-37&&moveSpeed<0) {
             climb.climb(0);
         } else {
         climb.climb(moveSpeed);
         }
-                System.out.println(climb.getMotorPos());
+        System.out.println(climb.getMotorPos());
     }
     @Override//if it's at the right point
     public boolean isFinished() {
-        return (shouldEnd&&((climb.getMotorPos()<-30&&moveSpeed<0)||(climb.getMotorPos()>2.5&&moveSpeed>0)));
+        return (shouldEnd&&((climb.getMotorPos()<-37&&moveSpeed<0)||(climb.getMotorPos()>-6&&moveSpeed>0)));
     }
     @Override
     public void end(boolean interrupted) {
         climb.climb(0);
-        System.out.println("done");
     }
 }
