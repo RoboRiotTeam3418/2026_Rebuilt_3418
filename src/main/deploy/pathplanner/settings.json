@@ -3,7 +3,8 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
-    "New Folder"
+    "shoot",
+    "climb"
   ],
   "autoFolders": [],
   "defaultMaxVel": 0.6,
@@ -31,6 +32,6 @@
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.32},\"size\":{\"width\":0.18,\"length\":0.18},\"borderRadius\":0.0,\"strokeWidth\":0.01,\"filled\":false}}"
+    "{\"name\":\"climber notch\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.32},\"size\":{\"width\":0.18,\"length\":0.18},\"borderRadius\":0.0,\"strokeWidth\":0.01,\"filled\":false}}"
   ]
 }

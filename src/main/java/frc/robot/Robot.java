@@ -12,6 +12,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+  private Command startIntake;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   @Override

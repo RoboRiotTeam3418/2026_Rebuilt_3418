@@ -22,6 +22,7 @@ import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.pivotIntake;
 import frc.robot.commands.ManualClimbCmd;
+import frc.robot.commands.ShootCmd;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
@@ -54,7 +55,7 @@ public class RobotContainer {
   //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
   //private final ShootCmd shootCmd;
 
-  public DoubleSupplier getPosTwist = () -> -m_primary.getLeftX()/2;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
+  public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
   public DoubleSupplier followTag = () -> {
         if (LimelightHelpers.getTV("limelight")) {
           return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
@@ -76,8 +77,22 @@ public class RobotContainer {
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-      () -> (-m_primary.getRightY()/2),
-      () -> (-m_primary.getRightX()/2))
+      () -> (-m_primary.getLeftY()*.75),
+      () -> (-m_primary.getLeftX()*.75))
+      .withControllerRotationAxis(getPosTwist)
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(.8)
+      .allianceRelativeControl(true);
+  SwerveInputStream driveAngularVelocitySlow = SwerveInputStream.of(drivebase.getSwerveDrive(),
+      () -> (-m_primary.getLeftY()*.25),
+      () -> (-m_primary.getLeftX()*.25))
+      .withControllerRotationAxis(getPosTwist)
+      .deadband(OperatorConstants.DEADBAND)
+      .scaleTranslation(.8)
+      .allianceRelativeControl(true);
+  SwerveInputStream driveAngularVelocityMedium = SwerveInputStream.of(drivebase.getSwerveDrive(),
+      () -> (-m_primary.getLeftY()*.5),
+      () -> (-m_primary.getLeftX()*.5))
       .withControllerRotationAxis(getPosTwist)
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(.8)
@@ -98,17 +113,15 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, -.2, true));
-    NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, .2, true));
+    //shootCmd = new ShootCmd(m_shooter);
+    NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, .2, true));
+    NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, -.2, true));
+    //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
+    //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
-
-    //shootCmd = new ShootCmd(m_shooter);
-
-    //NamedCommands.registerCommand("test", m_shooter.test());
-    //NamedCommands.registerCommand("Shoot", shootCmd);
   }
 
   /**
@@ -131,6 +144,8 @@ public class RobotContainer {
   private void configureBindings() {
     // DRIVETRAIN COMMAND ASSIGNMENTS R
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocityMedium = drivebase.driveFieldOriented(driveAngularVelocityMedium);
+    Command driveFieldOrientedAnglularVelocitySlow = drivebase.driveFieldOriented(driveAngularVelocitySlow);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
     //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
     //drive team is aware of this
@@ -138,21 +153,34 @@ public class RobotContainer {
     // if joystick doesn't have the button you need
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
-    BooleanSupplier button = () -> m_primary.getHID().getRawButton(3);
-    Trigger Button = new Trigger(button);
-    Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,false));
-    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,false));
+    m_primary.b().onTrue(drivebase.zeroGyroCmd());
+
+    /*
+     * ^^^
+     * Devin we need a zero gyro command so we dont freak the navx out.
+     * 
+     */
+
+
+    //Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
+    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
+    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    m_primary.y().onTrue(driveFieldOrientedAnglularVelocity);
+    m_primary.b().onTrue(driveFieldOrientedAnglularVelocityMedium);
+    m_primary.a().onTrue(driveFieldOrientedAnglularVelocitySlow);
+
     //m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
 
     Trigger Intaketrig=m_secondary.axisGreaterThan(2, .25);
     Trigger extakeTrig =m_secondary.leftBumper();
-    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(-0.25)));
-    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(.5)));
-    Intaketrig.whileFalse(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,-.4),intakeSubsystem.intakeCMD(0))).and(extakeTrig.whileFalse(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,-.4),intakeSubsystem.intakeCMD(0))));
+
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(-0.4)));
+    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(.4)));
+    Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));
+    m_secondary.rightBumper().onTrue(new pivotIntake(intakeSubsystem,-.4));
     /* Shooter stuff:
         m_primary.button(1).onChange(shooter.triggerThing());
     shooter.setDefaultCommand(shooter.Shoot());
