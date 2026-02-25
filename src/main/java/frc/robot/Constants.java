@@ -62,6 +62,7 @@ public final class Constants {
     public static final int SHOOTER_MOTOR_A = 14;
     public static final int SHOOTER_MOTOR_B = 15;
     public static final int FEEDER_MOTOR = 16;
+    public static final int MEGATAG_VERSION = 2;
 
     //Climber ID
     public static final int CLIMBER_MOTOR=12;

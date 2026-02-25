@@ -18,6 +18,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +37,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.SubsystemConstants;
+import frc.robot.util.drivers.LimelightHelpers;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -699,4 +704,30 @@ public class SwerveSubsystem extends SubsystemBase
 
   }
 
+  public void estimatePoseWithLimelight() {
+    swerveDrive.updateOdometry();
+    LimelightHelpers.PoseEstimate poseEstimate = null;
+    boolean shouldUpdate = false;
+    double nElement = 0.5;
+    switch (SubsystemConstants.MEGATAG_VERSION) {
+      case 1:
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        shouldUpdate = (poseEstimate.tagCount == 1 && poseEstimate.rawFiducials.length == 1) && poseEstimate.rawFiducials[0].ambiguity <= 0.7 && poseEstimate.rawFiducials[0].distToCamera <= 3;
+        break;
+      case 2:
+        LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        shouldUpdate = Math.abs(swerveDrive.getRobotVelocity().omegaRadiansPerSecond) <= 720 && poseEstimate.tagCount > 0;
+        nElement = 0.7;
+        break;
+      default:
+          DriverStation.reportError("Invalid Limelight Pose Estimation Version", false);
+          break;
+    }
+
+    if (shouldUpdate && poseEstimate != null) {
+      swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(nElement, nElement, 999999999));
+      swerveDrive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+    }
+  }
 }

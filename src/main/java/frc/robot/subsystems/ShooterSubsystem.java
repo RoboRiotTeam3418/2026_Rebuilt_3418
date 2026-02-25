@@ -63,6 +63,9 @@ public class ShooterSubsystem extends SubsystemBase {
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
 
+    /**
+     * @return True if the hub is in the limelights sight.
+     */
     public boolean hubInSight() {
         if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return false;
 
