@@ -40,9 +40,10 @@ public class pivotIntake extends Command {
       m_Intake.pivotMotor.set(0);
     } else {
       m_Intake.pivotMotor.set(spd);
+      
     }
-    System.out.println(m_Intake.ThroughboreEncoder.getPosition());
-    System.out.println(spd);
+    /*System.out.println(m_Intake.ThroughboreEncoder.getPosition());
+    System.out.println(spd);*/
   }
 
   // Called once the command ends or is interrupted.
