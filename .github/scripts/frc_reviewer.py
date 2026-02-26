@@ -6,7 +6,7 @@ from google import genai
 
 # ================= CONFIGURATION =================
 # We use Gemini 3 Flash Preview for maximum reasoning capability.
-MODEL_ID = 'gemini-3-flash-preview'
+MODEL_ID = 'gemini-flash-latest'
 
 BASE_SYSTEM_PROMPT = (
     "You are a Lead Software Mentor for a FIRST Robotics Competition (FRC) team.\n"
