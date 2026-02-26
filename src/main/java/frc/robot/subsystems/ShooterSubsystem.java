@@ -22,7 +22,6 @@ import frc.robot.util.math.MathUtils;
 
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
-    public Feeder feeder;
     private static double 
     p = 1,
     i = 0.01,
@@ -44,12 +43,10 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * Constructor for shooter subsystem, initializes motors, encoders, and PID controller. Also sets limelight pipeline. Logs PID values to smart dashboard in test mode.
      */
-    public ShooterSubsystem(Feeder feeder) {
+    public ShooterSubsystem() {
         Instance = this;
 
         Log("Shooter subsystem loading...\nTest mode is enabled, do not use this in comp it sends a LOT to smart dashboard!!\nP: " + p + ", I: " + i + ", D: " + d);
-
-        this.feeder = feeder;
 
         sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
         sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
@@ -133,12 +130,6 @@ public class ShooterSubsystem extends SubsystemBase {
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID output before clamp", beforeClamp);
                 SmartDashboard.putNumber("Shooter PID output after clamp", speed);
-            }
-
-            if (speed > 0.65) {
-                feeder.feedBalls();
-            } else {
-                feeder.stopFeeding();
             }
 
             setSpeeds(speed);

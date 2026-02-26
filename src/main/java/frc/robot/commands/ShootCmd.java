@@ -27,7 +27,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity(), setpoint) * 10); // This should never be ran at the same time as ShooterSubsystem, this is for auto use only
+        shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity(), setpoint)); // This should never be ran at the same time as ShooterSubsystem, this is for auto use only
     }
 
     @Override

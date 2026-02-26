@@ -52,7 +52,7 @@ public class RobotContainer {
   private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
   private final Climber m_Climber = new Climber();
   //private final Feeder m_feeder = new Feeder();
-  //private final ShooterSubsystem m_shooter = new ShooterSubsystem(m_feeder);
+  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   //private final ShootCmd shootCmd;
 
   public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
@@ -182,7 +182,7 @@ public class RobotContainer {
     Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));
     m_secondary.rightBumper().onTrue(new pivotIntake(intakeSubsystem,-.4));
     /* Shooter stuff:
-        m_primary.button(1).onChange(shooter.triggerThing());
+        m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
     shooter.setDefaultCommand(shooter.Shoot());
     */
 
