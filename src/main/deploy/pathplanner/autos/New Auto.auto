@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "probably ideal"
+                  "pathName": "if you guys want a tolerable side climb lineup"
                 }
               },
               {
@@ -21,6 +21,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lining up will be difficult"
           }
         },
         {

@@ -38,7 +38,7 @@
         "maxVelocity": 0.3,
         "maxAcceleration": 0.3,
         "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
+        "maxAngularAcceleration": 900.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
@@ -50,7 +50,7 @@
         "x": 4.75,
         "y": 4.031
       },
-      "rotationOffset": 90.0,
+      "rotationOffset": -90.0,
       "minWaypointRelativePos": 0.13,
       "maxWaypointRelativePos": 0.75,
       "name": "Point Towards Zone"
@@ -65,10 +65,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.6,
-    "maxAcceleration": 0.6,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 1.2,
+    "maxAcceleration": 1.2,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 900.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
