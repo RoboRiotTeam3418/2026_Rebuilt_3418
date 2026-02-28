@@ -23,7 +23,7 @@ import frc.robot.util.math.MathUtils;
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
-    p = 1,
+    p = 0.1,
     i = 0.01,
     d = 0;
     
@@ -125,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public Command Shoot() {
         return run(() -> {
             double beforeClamp = pidController.calculate(encoderA.getVelocity(), getSetpoint.getAsDouble());  // his has been tested and is safe for robot use
-            double speed = MathUtils.clamp( beforeClamp, 0, 0.7);
+            double speed = MathUtils.clamp(beforeClamp, 0, 0.7);
 
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID output before clamp", beforeClamp);
