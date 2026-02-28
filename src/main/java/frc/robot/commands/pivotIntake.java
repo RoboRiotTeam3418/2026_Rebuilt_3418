@@ -34,27 +34,29 @@ public class pivotIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_Intake.ThroughboreEncoder.getPosition() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd<0) {
-      m_Intake.pivotMotor.set(0); // Motor shouldn't be running once these constants are reached.
-    } else if (m_Intake.ThroughboreEncoder.getPosition() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0){
-      m_Intake.pivotMotor.set(0);
+    /*
+    if (m_Intake.getPivotEncoderPos() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd<0) {
+      m_Intake.setPivotSPD(0); // Motor shouldn't be running once these constants are reached.
+    } else if (m_Intake.getPivotEncoderPos() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0){
+      m_Intake.setPivotSPD(0);
     } else {
-      m_Intake.pivotMotor.set(spd);
-      
+      m_Intake.setPivotSPD(spd);
     }
-    /*System.out.println(m_Intake.ThroughboreEncoder.getPosition());
-    System.out.println(spd);*/
+    */
+
+    m_Intake.setPivotSPD(spd);
+    System.out.println(m_Intake.getPivotEncoderPos());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Intake.pivotMotor.set(0);
+    m_Intake.setPivotSPD(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (m_Intake.ThroughboreEncoder.getPosition() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd<0)||(m_Intake.ThroughboreEncoder.getPosition() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0);
+    return (m_Intake.getPivotEncoderPos() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd<0)||(m_Intake.getPivotEncoderPos() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0);
   }
 }

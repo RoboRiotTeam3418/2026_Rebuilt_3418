@@ -177,10 +177,17 @@ public class RobotContainer {
     Trigger Intaketrig=m_secondary.axisGreaterThan(2, .25);
     Trigger extakeTrig =m_secondary.leftBumper();
 
-    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(-0.4)));
-    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.intakeCMD(.4)));
-    Intaketrig.whileFalse(intakeSubsystem.intakeCMD(0)).and(extakeTrig.whileFalse(intakeSubsystem.intakeCMD(0)));
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.setIntakeSPD(-0.4)));
+    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.setIntakeSPD(0.4)));
+    Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
     m_secondary.rightBumper().onTrue(new pivotIntake(intakeSubsystem,-.4));
+    Trigger pivotIntake =m_secondary.rightBumper(); // A test
+    Trigger pivotOuttake =m_secondary.axisGreaterThan(3,0.25); // A test
+    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,1.0));
+    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-1.0));
+    Intaketrig.whileTrue(intakeSubsystem.setIntakeSPD(-0.25));
+    extakeTrig.whileTrue(intakeSubsystem.setIntakeSPD(.5));
+    Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
     /* Shooter stuff:
         m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
     shooter.setDefaultCommand(shooter.Shoot());
