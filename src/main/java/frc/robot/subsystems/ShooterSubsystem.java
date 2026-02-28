@@ -133,6 +133,7 @@ public class ShooterSubsystem extends SubsystemBase {
             }
 
             setSpeeds(speed);
+            SmartDashboard.putBoolean("Ready to Shoot?",pidController.atSetpoint());
         });
     }
 
