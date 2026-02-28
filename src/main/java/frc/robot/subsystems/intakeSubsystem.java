@@ -10,43 +10,65 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import edu.wpi.first.wpilibj.Encoder; (not used?)
-//import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax; (also not used)
 
 
 public class intakeSubsystem extends SubsystemBase {
     // Pivot
-    public SparkMax pivotMotor; 
-    public AbsoluteEncoder ThroughboreEncoder;
+    private SparkMax pivotMotor; 
+    private AbsoluteEncoder ThroughboreEncoder;
 
     // Intake
-    public SparkMax IntakeMotor; // This probably doesn't need to be public.
+    private SparkMax IntakeMotor;
 
-    // Constructor
-    public intakeSubsystem() {
+
+    public intakeSubsystem() { // Constructor
         pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
 
         IntakeMotor = new SparkMax(SubsystemConstants.INTAKEID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
     }
 
-    /*
-     Note: The pivot is much more complex than the intake itself. As this is the case, the functionality of the intake
-           is in this subsystem rather than being its own separate command.
 
-           This also means that the command that controls the pivot of the intake is in its own separate file (in commands).
-           you probably already saw it though.
-    */
-    
-    public Command intakeCMD(double speed) {
-    /**
-     * This subsystem should have its default command set to this command with a Speed of 0. 
-     * This probably should be done in RobotContainer.
-     */
-        return run(() -> {                       
-            IntakeMotor.set(speed);
-        });
+    // --------------- methods/functions --------------- //
+
+    // ---------- active / commands ---------- //
+    public Command setIntakeSPD(double speed) { // method to activate intake
+      return run(() -> {                       
+        IntakeMotor.set(speed);
+      });
     }
+
+    public Command setPivotSPD(double speed) { // method to pivot the intake
+      return run(() -> {
+        // Slows down when closer to soft stops or prevents movement when exceeding or too close to soft stops
+        if (ThroughboreEncoder.getPosition() > SubsystemConstants.INTAKE_MAX_ANGLE_IN || ThroughboreEncoder.getPosition() < SubsystemConstants.INTAKE_MAX_ANGLE_OUT){
+          pivotMotor.set(0);
+        } else if (ThroughboreEncoder.getPosition() > (SubsystemConstants.INTAKE_MAX_ANGLE_IN - 0.075) || ThroughboreEncoder.getPosition() < (SubsystemConstants.INTAKE_MAX_ANGLE_OUT + 0.075)){
+          pivotMotor.set(speed/2);
+        } else {
+          pivotMotor.set(speed);
+        }
+      });
+    }
+
+    public Command SetPivotSpeed_NoStops(double speed) { // Not reccomended to use, currently for "testing" purposes. Will remove later.
+      return run(() -> {                       
+        IntakeMotor.set(speed);
+      });
+    }
+
+    public Command resetIntake(double speed) { // a test command (probably won't need this)
+      return run(() -> {                       
+        pivotMotor.set(speed);
+      });
+    }
+
+    
+    // ---------- informational ---------- //
+    public double getPivotEncoderPos() {
+      return ThroughboreEncoder.getPosition();
+    }
+
 
     /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -70,5 +92,3 @@ public class intakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 }
-
-

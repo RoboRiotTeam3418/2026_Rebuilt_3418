@@ -38,18 +38,31 @@ public class pivotIntake extends Command {
       m_Intake.pivotMotor.set(0); // Motor shouldn't be running once these constants are reached.
     } else if (m_Intake.ThroughboreEncoder.getPosition() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0){
       m_Intake.pivotMotor.set(0);
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     } else {
       m_Intake.pivotMotor.set(spd);
       
     }
     /*System.out.println(m_Intake.ThroughboreEncoder.getPosition());
     System.out.println(spd);*/
+=======
+=======
+>>>>>>> Stashed changes
+    } else {*/
+      m_Intake.setPivotSPD(spd);
+    //}
+    System.out.println(m_Intake.getPivotEncoderPos());
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Intake.pivotMotor.set(0);
+    m_Intake.setPivotSPD(0);
   }
 
   // Returns true when the command should end.
