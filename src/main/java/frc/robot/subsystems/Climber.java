@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.util.math.DeadbandUtils;
@@ -30,6 +31,7 @@ public class Climber extends SubsystemBase{
         if (bottom.get()) {
             bottomPos=getMotorPos();
         }
+        SmartDashboard.putNumber("Position", getMotorPos());
     }
     //2 means at top, 0 means at bottom, 1 means in motion
     public int getHeight() {

@@ -15,10 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.pivotIntake;
 import frc.robot.commands.ClimbingCmd;
@@ -118,6 +116,7 @@ public class RobotContainer {
     //TODO make auto command using new climber cmd
     NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, .2, true));
     NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, -.2, true));
+    NamedCommands.registerCommand("toggle climb", new ClimbingCmd(m_Climber));
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();

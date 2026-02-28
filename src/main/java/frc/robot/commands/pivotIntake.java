@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import swervelib.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -28,7 +29,7 @@ public class pivotIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    SmartDashboard.putBoolean("Pivot Out", true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,6 +53,7 @@ public class pivotIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     m_Intake.setPivotSPD(0);
+    SmartDashboard.putBoolean("Pivot Out", false);
   }
 
   // Returns true when the command should end.
