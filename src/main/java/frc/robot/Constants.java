@@ -66,6 +66,8 @@ public final class Constants {
 
     //Climber ID
     public static final int CLIMBER_MOTOR=12;
+    //Distance between 2 stops
+    public static final double CLIMBER_DISTANCE=32;
 
     // Intake IDs
     public static final int INTAKEPIVOTID = 17;

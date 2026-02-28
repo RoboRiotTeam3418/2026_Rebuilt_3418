@@ -1,3 +1,6 @@
+/**THIS IS REDUNDANT AND NOT TO BE USED OUTSIDE OF TESTING USE 
+ * USE {@link ClimbingCmd}
+ */
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;

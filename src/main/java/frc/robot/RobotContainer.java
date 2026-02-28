@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.pivotIntake;
+import frc.robot.commands.ClimbingCmd;
 import frc.robot.commands.ManualClimbCmd;
 import frc.robot.commands.ShootCmd;
 import frc.robot.subsystems.Climber;
@@ -114,6 +115,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     //shootCmd = new ShootCmd(m_shooter);
+    //TODO make auto command using new climber cmd
     NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, .2, true));
     NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, -.2, true));
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
@@ -163,8 +165,9 @@ public class RobotContainer {
 
 
     //Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
-    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));
+    /*m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
+    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));*/
+    m_secondary.a().onTrue(new ClimbingCmd(m_Climber));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
