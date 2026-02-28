@@ -25,6 +25,8 @@ import frc.robot.commands.ClimbingCmd;
 import frc.robot.commands.ManualClimbCmd;
 import frc.robot.commands.ShootCmd;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.util.LimelightTAMatrix;
@@ -52,8 +54,8 @@ public class RobotContainer {
       "swerve/neo"));
   private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
   private final Climber m_Climber = new Climber();
-  //private final Feeder m_feeder = new Feeder();
-  //private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  private final Feeder m_feeder = new Feeder();
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   //private final ShootCmd shootCmd;
 
   public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
@@ -155,7 +157,7 @@ public class RobotContainer {
     // if joystick doesn't have the button you need
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
-    m_primary.b().onTrue(drivebase.zeroGyroCmd());
+    m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
 
     /*
      * ^^^
@@ -191,10 +193,10 @@ public class RobotContainer {
     Intaketrig.whileTrue(intakeSubsystem.setIntakeSPD(-0.25));
     extakeTrig.whileTrue(intakeSubsystem.setIntakeSPD(.5));
     Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
-    /* Shooter stuff:
-        m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
-    shooter.setDefaultCommand(shooter.Shoot());
-    */
+    
+    m_primary.button(1).onChange(m_shooter.triggerThing()).whileTrue(m_feeder.feed());
+    m_shooter.setDefaultCommand(m_shooter.Shoot());
+    
 
     // Primary Driver
 
