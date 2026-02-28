@@ -58,15 +58,15 @@ public class RobotContainer {
 
   public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
   public DoubleSupplier followTag = () -> {
-        if (LimelightHelpers.getTV("limelight")) {
-          return -Math.max(-0.75, Math.min(LimelightHelpers.getTX("limelight") / 27.0, 0.75));
+        if (LimelightHelpers.getTV()) {
+          return -Math.max(-0.75, Math.min(LimelightHelpers.getTX() / 27.0, 0.75));
         } else return 0;
       };
 
   SwerveInputStream driveFollowTag = SwerveInputStream.of(drivebase.getSwerveDrive(), 
   () -> {
-    if (!LimelightHelpers.getTV("limelight")) return 0;
-    double ta = LimelightHelpers.getTA("limelight");
+    if (!LimelightHelpers.getTV()) return 0;
+    double ta = LimelightHelpers.getTA();
     if (ta < 1.7) {
       return (1 / -ta);
     } else if (ta > 4) {

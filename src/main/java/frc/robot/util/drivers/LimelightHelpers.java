@@ -956,6 +956,37 @@ public class LimelightHelpers {
         return getLimelightNTDouble(limelightName, "ty");
     }
 
+
+
+
+    /**
+     * Does the Limelight have a valid target?
+     * @return True if a valid target is present, false otherwise
+     */
+    public static boolean getTV() {
+        return 1.0 == getLimelightNTDouble("limelight", "tv");
+    }
+
+    /**
+     * Gets the horizontal offset from the crosshair to the target in degrees.
+     * @return Horizontal offset angle in degrees
+     */
+    public static double getTX() {
+        return getLimelightNTDouble("limelight", "tx");
+    }
+
+    /**
+     * Gets the vertical offset from the crosshair to the target in degrees.
+     * @return Vertical offset angle in degrees
+     */
+    public static double getTY() {
+        return getLimelightNTDouble("limelight", "ty");
+    }
+
+
+
+
+
     /**
      * Gets the horizontal offset from the principal pixel/point to the target in
      * degrees. This is the most accurate 2d metric if you are using a calibrated
@@ -966,6 +997,16 @@ public class LimelightHelpers {
      */
     public static double getTXNC(String limelightName) {
         return getLimelightNTDouble(limelightName, "txnc");
+    }
+
+    /**
+     * Gets the horizontal offset from the principal pixel/point to the target in
+     * degrees. This is the most accurate 2d metric if you are using a calibrated
+     * camera and you don't need adjustable crosshair functionality.
+     * @return Horizontal offset angle in degrees
+     */
+    public static double getTXNC() {
+        return getLimelightNTDouble("limelight", "txnc");
     }
 
     /**
@@ -981,6 +1022,16 @@ public class LimelightHelpers {
     }
 
     /**
+     * Gets the vertical offset from the principal pixel/point to the target in
+     * degrees. This is the most accurate 2d metric if you are using a calibrated
+     * camera and you don't need adjustable crosshair functionality.
+     * @return Vertical offset angle in degrees
+     */
+    public static double getTYNC() {
+        return getLimelightNTDouble("limelight", "tync");
+    }
+
+    /**
      * Gets the target area as a percentage of the image (0-100%).
      * 
      * @param limelightName Name of the Limelight camera ("" for default)
@@ -988,6 +1039,15 @@ public class LimelightHelpers {
      */
     public static double getTA(String limelightName) {
         return getLimelightNTDouble(limelightName, "ta");
+    }
+
+    /**
+     * Gets the target area as a percentage of the image (0-100%).
+     * 
+     * @return Target area percentage (0-100)
+     */
+    public static double getTA() {
+        return getLimelightNTDouble("limelight", "ta");
     }
 
     /**

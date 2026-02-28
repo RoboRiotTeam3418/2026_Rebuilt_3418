@@ -64,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return True if the hub is in the limelights sight.
      */
     public boolean hubInSight() {
-        if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return false;
+        if (!LimelightHelpers.getTV() || Constants.SAD_LIMELIGHT_MODE) return false;
 
         return LimelightHelpers.getTID() == AprilTagConstants.HUB_CENTER_BLUE || LimelightHelpers.getTID() == AprilTagConstants.HUB_CENTER_RED;
     }
@@ -74,10 +74,10 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return limelight horizontal offset to april tag at hub
      */
     public DoubleSupplier aprilTagPos = () -> {
-        if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0;
+        if (!LimelightHelpers.getTV() || Constants.SAD_LIMELIGHT_MODE) return 0;
 
         if (hubInSight()) {
-            return LimelightHelpers.getTX("limelight");
+            return LimelightHelpers.getTX();
         }
 
         return 0;
@@ -90,10 +90,10 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return flywheel speed (0.05 to 1)
      */
     public double limelightCalculator() {
-        if (!LimelightHelpers.getTV("limelight") || Constants.SAD_LIMELIGHT_MODE) return 0.7; // set flywheel speed regardless of vision
+        if (!LimelightHelpers.getTV() || Constants.SAD_LIMELIGHT_MODE) return 0.7; // set flywheel speed regardless of vision
 
         if (hubInSight()) {
-            double ta = LimelightHelpers.getTA("limelight");
+            double ta = LimelightHelpers.getTA();
             double speed = ShooterDistanceMatrix.get(LimelightTAMatrix.get(ta)); // Ta matrix gets the distance from ta, then shooter distance converts that to flywheel speed
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Distance from limelight ", speed);
