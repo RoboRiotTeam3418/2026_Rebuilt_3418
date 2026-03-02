@@ -193,8 +193,7 @@ public class RobotContainer {
     extakeTrig.whileTrue(intakeSubsystem.setIntakeSPD(.5));
     Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
     
-    m_primary.button(1).onChange(m_shooter.triggerThing()).onTrue(m_feeder.feed());
-    m_shooter.setDefaultCommand(m_shooter.Shoot());
+    m_secondary.b().whileTrue(m_shooter.Shoot()).onFalse(m_shooter.StopShooting());
     
 
     // Primary Driver

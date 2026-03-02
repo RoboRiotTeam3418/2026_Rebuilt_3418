@@ -14,16 +14,18 @@ public class Feeder extends SubsystemBase {
     }
 
     public void feedBalls() {
-        feeder.set(0.5);
+        feeder.set(0.15);
     }
 
-    public void stopFeeding() {
-        feeder.set(0);
+    public Command stopFeeding() {
+        return runOnce(() -> {
+            feeder.set(0);
+        });
     }
 
     public Command feed() {
-        return run(() -> {
-            Thread t = new Thread() {
+        return runOnce(() -> {
+            /*Thread t = new Thread() {
                 @Override
                 public void run() {
                     try {
@@ -35,8 +37,9 @@ public class Feeder extends SubsystemBase {
                 }
             };
 
-            t.start();
+            t.start();*/
+            feedBalls();
             
-            }).finallyDo(() -> {stopFeeding();});
+            });//.finallyDo(() -> {stopFeeding();});
     }
 }
