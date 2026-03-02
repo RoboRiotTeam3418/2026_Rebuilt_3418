@@ -51,7 +51,7 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
-  private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
+  private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Climber m_Climber = new Climber();
   private final Feeder m_Feeder = new Feeder();
   private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
@@ -157,7 +157,7 @@ public class RobotContainer {
     // if joystick doesn't have the button you need
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
     Trigger deathModeTrig = new Trigger(deathMode);
-    m_primary.b().onTrue(drivebase.zeroGyroCmd());
+    m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
 
     /*
      * ^^^
@@ -184,9 +184,9 @@ public class RobotContainer {
     Trigger Intaketrig=m_primary.axisGreaterThan(2, .25);
     Trigger reving = new Trigger(m_Shooter.ready());
 
-    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.setIntakeSPD(-0.4)));
-    Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0));
-    m_secondary.leftBumper().onTrue(new pivotIntake(intakeSubsystem,-.4));
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,.4),m_Intake.setIntakeSPD(-0.4)));
+    Intaketrig.whileFalse(m_Intake.setIntakeSPD(0));
+    m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,-.4));
     m_secondary.rightBumper()/* .and(reving)*/.whileTrue(new ParallelCommandGroup(m_Feeder.feed()));
     m_secondary.rightTrigger(.25).whileTrue(new ShootCmd(m_Shooter));
     /* Shooter stuff:
