@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -23,7 +25,7 @@ import frc.robot.util.math.MathUtils;
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
-    p = 0.1,
+    p = .9,
     i = 0.01,
     d = 0;
     
@@ -55,7 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
         encoderB = sparkMaxB.getAbsoluteEncoder();
 
         pidController = new PIDController(p, i, d);
-        pidController.setSetpoint(0);
+        pidController.setSetpoint(-0.7);
+
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
@@ -132,8 +135,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("Shooter PID output after clamp", speed);
             }
 
-            setSpeeds(speed);
-            SmartDashboard.putBoolean("Ready to Shoot?",pidController.atSetpoint());
+            setSpeeds(-speed);
         });
     }
 
@@ -143,7 +145,16 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void setSpeeds(double speed) {
         sparkMaxA.set(speed);
-        sparkMaxB.set(speed); 
+        sparkMaxB.set(speed);
+        SmartDashboard.putNumber("current speed", speed);
+    }
+    public double getSpeeds() {
+        return sparkMaxA.getEncoder().getVelocity();
+    }
+
+    public void stopMotors() {
+        sparkMaxA.stopMotor();
+        sparkMaxB.stopMotor();
     }
 
     /**
@@ -171,6 +182,11 @@ public class ShooterSubsystem extends SubsystemBase {
             pidController.setPID(p, i, d);
         });
     }
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Ready to Shoot?",ready().getAsBoolean());
+        SmartDashboard.putNumber("current speed", encoderA.getVelocity());
+    }
 
 
     /**
@@ -181,6 +197,9 @@ public class ShooterSubsystem extends SubsystemBase {
         if (DriverStation.isTestEnabled()) {
             System.out.println(objects);
         }
+    }
+    public BooleanSupplier ready() {
+        return ()->pidController.atSetpoint();
     }
 
     /**
