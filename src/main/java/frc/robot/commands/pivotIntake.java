@@ -45,7 +45,7 @@ public class pivotIntake extends Command {
     }
     */
 
-    m_Intake.setPivotSPD(spd);
+    m_Intake.pivot(spd);
     System.out.println(m_Intake.getPivotEncoderPos());
   }
 

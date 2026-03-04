@@ -50,6 +50,9 @@ public class intakeSubsystem extends SubsystemBase {
         }
       });
     }
+    public void pivot(double spd) {
+      pivotMotor.set(spd);
+    }
 
     public Command SetPivotSpeed_NoStops(double speed) { // Not reccomended to use, currently for "testing" purposes. Will remove later.
       return run(() -> {                       

@@ -185,8 +185,9 @@ public class RobotContainer {
     Trigger reving = new Trigger(m_Shooter.ready());
 
     Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,.4),m_Intake.setIntakeSPD(-0.4)));
-    Intaketrig.whileFalse(m_Intake.setIntakeSPD(0));
+    Intaketrig.whileFalse(m_Intake.setIntakeSPD(0)).and(m_primary.rightBumper().whileFalse(m_Intake.setIntakeSPD(0)));
     m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,-.4));
+    m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
     m_secondary.rightBumper()/* .and(reving)*/.whileTrue(new ParallelCommandGroup(m_Feeder.feed()));
     m_secondary.rightTrigger(.25).whileTrue(new ShootCmd(m_Shooter));
     /* Shooter stuff:
