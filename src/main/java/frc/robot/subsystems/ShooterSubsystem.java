@@ -130,18 +130,19 @@ public class ShooterSubsystem extends SubsystemBase {
             targetSpeed = limelightCalculator();
             beforeClamp = pidController.calculate(encoderA.getVelocity(), targetSpeed);
 
-            if (DriverStation.isTestEnabled()) {
-                SmartDashboard.putNumber("Shooter PID output before clamp", beforeClamp);
-                SmartDashboard.putNumber("Shooter PID target", targetSpeed);
-            }
-
-            if (Math.abs(speed - targetSpeed) < THRESHOLD/*|| speed >= targetSpeed*/) { // If we're within 0.05 of the target speed, we're ready to shoot
+            if (Math.abs(speed - targetSpeed) + (THRESHOLD / 2) <= THRESHOLD && speed < targetSpeed * 1.02) { // If we're within 0.05 of the target speed, we're ready to shoot
                 readyToShoot = true;
             } else {
                 readyToShoot = false;
             }
 
             setSpeeds(-speed);
+
+            if (DriverStation.isTestEnabled()) {
+                SmartDashboard.putNumber("Shooter PID output", beforeClamp);
+                SmartDashboard.putNumber("Shooter PID target", targetSpeed);
+                SmartDashboard.putBoolean("Should start feeding", readyToShoot);
+            }
         });
     }
 
@@ -151,6 +152,12 @@ public class ShooterSubsystem extends SubsystemBase {
             readyToShoot = false;
             pidController.reset();
             targetSpeed = 0;
+            beforeClamp = pidController.calculate(encoderA.getVelocity(), targetSpeed);
+
+            if (DriverStation.isTestEnabled()) {
+                SmartDashboard.putNumber("Shooter PID output", beforeClamp);
+                SmartDashboard.putNumber("Shooter PID target", targetSpeed);
+            }
         });
     }
 
