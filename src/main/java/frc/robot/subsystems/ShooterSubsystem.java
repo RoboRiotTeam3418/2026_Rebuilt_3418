@@ -5,7 +5,9 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,21 +27,21 @@ import frc.robot.util.math.MathUtils;
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
-    p = 1.3,
-    i = 0.01,
+    p = 1.2,
+    i = 0.16,
     d = 0;
     
     /**
      * This is the PID controller for the shooter flywheels. DO NOT CHANGE ANYTHING INSIDE, READ ONLY!
      */
-    public PIDController pidController;
+    public SparkClosedLoopController pidController;
     /**
      * If true, override drive control with april tag position
      */
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     SparkMax sparkMaxA, sparkMaxB;
-    public AbsoluteEncoder encoderA, encoderB;
+    public RelativeEncoder encoderA, encoderB;
 
     /**
      * Constructor for shooter subsystem, initializes motors, encoders, and PID controller. Also sets limelight pipeline. Logs PID values to smart dashboard in test mode.
@@ -52,12 +54,10 @@ public class ShooterSubsystem extends SubsystemBase {
         sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
         sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
 
-        encoderA = sparkMaxA.getAbsoluteEncoder();
-        encoderB = sparkMaxB.getAbsoluteEncoder();
+        encoderA = sparkMaxA.getEncoder();
+        encoderB = sparkMaxB.getEncoder();
 
-        pidController = new PIDController(p, i, d);
-        pidController.setSetpoint(-0.7);
-
+        pidController = sparkMaxA.getClosedLoopController();
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
@@ -118,7 +118,7 @@ public class ShooterSubsystem extends SubsystemBase {
     double targetSpeed = 0.4;
     double beforeClamp = 0;
 
-    final double THRESHOLD = 0.04; 
+    final double THRESHOLD = targetSpeed / 40; 
 
 
     /**
@@ -128,20 +128,18 @@ public class ShooterSubsystem extends SubsystemBase {
         return run(() -> {
             double speed = MathUtils.clamp(beforeClamp, 0, targetSpeed);
             targetSpeed = limelightCalculator();
-            beforeClamp = pidController.calculate(encoderA.getVelocity(), targetSpeed);
+            pidController.setSetpoint(targetSpeed, ControlType.kVelocity);
+            //beforeClamp = pidController.getMAXMotionSetpointPosition();
+            readyToShoot = Math.abs((encoderA.getVelocity() / 6784) - targetSpeed) <= THRESHOLD;
 
-            if (Math.abs(speed - targetSpeed) + (THRESHOLD / 2) <= THRESHOLD && speed < targetSpeed * 1.02) { // If we're within 0.05 of the target speed, we're ready to shoot
-                readyToShoot = true;
-            } else {
-                readyToShoot = false;
-            }
-
-            setSpeeds(-speed);
+            //setSpeeds(-speed);
 
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID output", beforeClamp);
                 SmartDashboard.putNumber("Shooter PID target", targetSpeed);
                 SmartDashboard.putBoolean("Should start feeding", readyToShoot);
+                SmartDashboard.putNumber("Threshold", THRESHOLD);
+                SmartDashboard.putNumber("Math", Math.abs((encoderA.getVelocity() / 6784) - targetSpeed));
             }
         });
     }
@@ -150,9 +148,8 @@ public class ShooterSubsystem extends SubsystemBase {
         return runOnce(() -> {
             setSpeeds(0);
             readyToShoot = false;
-            pidController.reset();
+            pidController.setSetpoint(0, ControlType.kVelocity);
             targetSpeed = 0;
-            beforeClamp = pidController.calculate(encoderA.getVelocity(), targetSpeed);
 
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID output", beforeClamp);
@@ -190,7 +187,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return runOnce(() -> {
             Log("Pids updated to: " + kP + ", " + kI + ", " + kD);
 
-            pidController.setPID(kP, kI, kD);
+           // pidController.setPID(kP, kI, kD);
             p = kP;
             i = kI;
             d = kD;
@@ -202,7 +199,7 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public Command UpdatePID() {
         return runOnce(() -> {
-            pidController.setPID(p, i, d);
+            //pidController.setPID(p, i, d);
         });
     }
     @Override
