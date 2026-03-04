@@ -4,10 +4,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -57,7 +60,11 @@ public class ShooterSubsystem extends SubsystemBase {
         encoderA = sparkMaxA.getEncoder();
         encoderB = sparkMaxB.getEncoder();
 
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.closedLoop.pid(p, i, d).outputRange(0, 5000);
+
         pidController = sparkMaxA.getClosedLoopController();
+        sparkMaxA.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
@@ -115,10 +122,9 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
-    double targetSpeed = 0.4;
-    double beforeClamp = 0;
+    double targetSpeed = 5000; // This is in rpm!! Tune on thursday!
 
-    final double THRESHOLD = targetSpeed / 40; 
+    final double THRESHOLD = targetSpeed / 500; 
 
 
     /**
@@ -126,16 +132,14 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public Command Shoot() {
         return run(() -> {
-            double speed = MathUtils.clamp(beforeClamp, 0, targetSpeed);
             targetSpeed = limelightCalculator();
             pidController.setSetpoint(targetSpeed, ControlType.kVelocity);
             //beforeClamp = pidController.getMAXMotionSetpointPosition();
-            readyToShoot = Math.abs((encoderA.getVelocity() / 6784) - targetSpeed) <= THRESHOLD;
+            readyToShoot = Math.abs(encoderA.getVelocity() - targetSpeed) <= THRESHOLD;
 
             //setSpeeds(-speed);
 
             if (DriverStation.isTestEnabled()) {
-                SmartDashboard.putNumber("Shooter PID output", beforeClamp);
                 SmartDashboard.putNumber("Shooter PID target", targetSpeed);
                 SmartDashboard.putBoolean("Should start feeding", readyToShoot);
                 SmartDashboard.putNumber("Threshold", THRESHOLD);
@@ -152,7 +156,6 @@ public class ShooterSubsystem extends SubsystemBase {
             targetSpeed = 0;
 
             if (DriverStation.isTestEnabled()) {
-                SmartDashboard.putNumber("Shooter PID output", beforeClamp);
                 SmartDashboard.putNumber("Shooter PID target", targetSpeed);
             }
         });
