@@ -21,7 +21,7 @@ public class Hopper extends SubsystemBase {
     
 
     public Hopper() { // Constructor
-        actuatorMotor = new SparkMax(Constants.SubsystemConstants.HOPPER_AGITATORS, MotorType.kBrushless);
+        actuatorMotor = new SparkMax(0, MotorType.kBrushless);
         //bouncerMotor = new SparkMax(Constants.SubsystemConstants.HOPPER_BOUNCER, MotorType.kBrushless);
     }
 

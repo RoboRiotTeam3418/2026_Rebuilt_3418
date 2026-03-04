@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCmd extends Command {
     private ShooterSubsystem shooter;
-    private double setpoint = 0.7;
+    private double setpoint = -.7;
     private PIDController pid;
 
     /**
@@ -27,7 +28,10 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.setSpeeds(pid.calculate(shooter.encoderA.getVelocity(), setpoint)); // This should never be ran at the same time as ShooterSubsystem, this is for auto use only
+        shooter.setSpeeds(pid.calculate(shooter.getSpeeds(), setpoint)); // This should never be ran at the same time as ShooterSubsystem, this is for auto use only
+        SmartDashboard.putNumber("speed", pid.calculate(shooter.getSpeeds(), setpoint));
+        SmartDashboard.putBoolean("Ready to Shoot?",shooter.ready().getAsBoolean());
+
     }
 
     @Override

@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -50,10 +51,10 @@ public class RobotContainer {
 
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
-  private final intakeSubsystem intakeSubsystem = new intakeSubsystem();
+  private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Climber m_Climber = new Climber();
-  private final Feeder m_feeder = new Feeder();
-  private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  private final Feeder m_Feeder = new Feeder();
+  private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
   //private final ShootCmd shootCmd;
 
   public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
@@ -168,7 +169,9 @@ public class RobotContainer {
     //Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
     /*m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
     m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));*/
+    //m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2, true));
     m_secondary.a().onTrue(new ClimbingCmd(m_Climber));
+    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2, true));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
@@ -178,27 +181,24 @@ public class RobotContainer {
 
     //m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
 
-    Trigger Intaketrig=m_secondary.axisGreaterThan(2, .25);
-    Trigger extakeTrig =m_secondary.leftBumper();
+    Trigger Intaketrig=m_primary.axisGreaterThan(2, .25);
+    Trigger reving = new Trigger(m_Shooter.ready());
 
-    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.setIntakeSPD(-0.4)));
-    extakeTrig.whileTrue(new SequentialCommandGroup(new pivotIntake(intakeSubsystem,.4),intakeSubsystem.setIntakeSPD(0.4)));
-    Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
-    m_secondary.rightBumper().onTrue(new pivotIntake(intakeSubsystem,-.4));
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,.4),m_Intake.setIntakeSPD(-0.4)));
+    Intaketrig.whileFalse(m_Intake.setIntakeSPD(0));
+    m_secondary.rightBumper().onTrue(new pivotIntake(m_Intake,-.4));
     Trigger pivotIntake =m_secondary.rightBumper(); // A test
     Trigger pivotOuttake =m_secondary.axisGreaterThan(3,0.25); // A test
-    pivotIntake.whileTrue(new pivotIntake(intakeSubsystem,1.0));
-    pivotOuttake.whileTrue(new pivotIntake(intakeSubsystem,-1.0));
-    Intaketrig.whileTrue(intakeSubsystem.setIntakeSPD(-0.25));
-    extakeTrig.whileTrue(intakeSubsystem.setIntakeSPD(.5));
-    Intaketrig.whileFalse(intakeSubsystem.setIntakeSPD(0)).and(extakeTrig.whileFalse(intakeSubsystem.setIntakeSPD(0)));
+    pivotIntake.whileTrue(new pivotIntake(m_Intake,1.0));
+    pivotOuttake.whileTrue(new pivotIntake(m_Intake,-1.0));
+
     
-    m_secondary.b().whileTrue(m_shooter.Shoot()).onFalse(m_shooter.StopShooting());
-    
+    m_secondary.axisGreaterThan(3, 0.75).whileTrue(m_Shooter.Shoot()).onFalse(m_Shooter.StopShooting());
+    reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());
 
     // Primary Driver
 
-    deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
+    //deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
   }
 
   /**

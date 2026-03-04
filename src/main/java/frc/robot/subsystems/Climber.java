@@ -12,32 +12,33 @@ import frc.robot.util.math.DeadbandUtils;
 public class Climber extends SubsystemBase{
     SparkMax climb1;
     DigitalInput bottom;
-    double bottomPos=-32;
+    double bottomPos=-10000;
+    boolean start;
 
     public Climber() {
         climb1=new SparkMax(SubsystemConstants.CLIMBER_MOTOR, MotorType.kBrushless);
         bottom=new DigitalInput(0);
+        start = true;
     }
 
     public void climb(double speed) {
-        if ((speed < 0 && bottom.get())||(speed>0 && getMotorPos()>bottomPos+32)) {
-            speed = 0;
-        } else {
         climb1.set(speed);
-        }
+        SmartDashboard.putNumber("bottom", bottomPos);
     }
     @Override
     public void periodic() {
-        if (bottom.get()) {
+        if (!bottom.get()) {
             bottomPos=getMotorPos();
         }
         SmartDashboard.putNumber("Position", getMotorPos());
+        SmartDashboard.putNumber("bottom", bottomPos);
+        SmartDashboard.putNumber("Height", getHeight());
     }
     //2 means at top, 0 means at bottom, 1 means in motion
     public int getHeight() {
         if (DeadbandUtils.isWithin(getMotorPos(), bottomPos+32, 2)) {
             return 2;
-        } else if (bottom.get()) {
+        } else if (!bottom.get()) {
             return 0;
         }
         return 1;
@@ -49,6 +50,15 @@ public class Climber extends SubsystemBase{
         return climb1.get();
     }
     public boolean atBottom() {
-        return bottom.get();
+        return !bottom.get();
+    }
+    public double getBottom() {
+        return bottomPos;
+    }
+    public boolean getStart() {
+        return start;
+    }
+    public void setStart(boolean hasStarted) {
+        start=hasStarted;
     }
     }

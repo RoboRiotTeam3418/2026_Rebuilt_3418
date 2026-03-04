@@ -77,7 +77,6 @@ public final class Constants {
     public static final double INTAKE_MAX_ANGLE_OUT = 0.15; // Maximum angle of intake based on exterior of robot
 
     // Hopper IDs
-    public static final int HOPPER_AGITATORS = 19;
     public static final int HOPPER_BOUNCER = 20;
   }
 

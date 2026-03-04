@@ -4,6 +4,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.subsystems.Climber;
 
 public class ManualClimbCmd extends Command {
@@ -26,9 +27,9 @@ public class ManualClimbCmd extends Command {
     @Override
     public void execute() {
         if (shouldEnd) {
-            if (climb.getMotorPos()>-1.9&&moveSpeed>0) {
+            if (climb.getMotorPos()>climb.getBottom()+SubsystemConstants.CLIMBER_DISTANCE&&moveSpeed>0) {
             climb.climb(0);
-        } else if (climb.getMotorPos()<-34&&moveSpeed<0) {
+        } else if (climb.atBottom()&&moveSpeed<0) {
             climb.climb(0);
         } else {
         climb.climb(moveSpeed);
@@ -40,7 +41,7 @@ public class ManualClimbCmd extends Command {
     }
     @Override//if it's at the right point
     public boolean isFinished() {
-        return (shouldEnd&&((climb.getMotorPos()<-34&&moveSpeed<0)||(climb.getMotorPos()>-1.9&&moveSpeed>0)));
+        return (shouldEnd&&((climb.getMotorPos()>climb.getBottom()+SubsystemConstants.CLIMBER_DISTANCE&&moveSpeed>0)||(climb.atBottom()&&moveSpeed<0)));
     }
     @Override
     public void end(boolean interrupted) {
