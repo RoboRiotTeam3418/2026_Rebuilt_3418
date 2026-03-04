@@ -25,7 +25,7 @@ import frc.robot.util.math.MathUtils;
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
-    p = .9,
+    p = 1.3,
     i = 0.01,
     d = 0;
     
@@ -37,8 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * If true, override drive control with april tag position
      */
     public boolean overrideDrive = false;
-    static boolean trigger = false;
-
+    public boolean readyToShoot = false;
     SparkMax sparkMaxA, sparkMaxB;
     public AbsoluteEncoder encoderA, encoderB;
 
@@ -93,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * @return flywheel speed (0.05 to 1)
      */
     public double limelightCalculator() {
-        if (!LimelightHelpers.getTV() || Constants.SAD_LIMELIGHT_MODE) return 0.7; // set flywheel speed regardless of vision
+        if (!LimelightHelpers.getTV() || Constants.SAD_LIMELIGHT_MODE) return 0.36; // set flywheel speed regardless of vision
 
         if (hubInSight()) {
             double ta = LimelightHelpers.getTA();
@@ -116,26 +115,42 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
 
-    public Command triggerThing() {return runOnce(() -> {trigger = !trigger; } ); }
+    double targetSpeed = 0.4;
+    double beforeClamp = 0;
 
-    DoubleSupplier getSetpoint = () -> {
-        return trigger ? limelightCalculator() : -0.2;
-    };
+    final double THRESHOLD = 0.04; 
+
 
     /**
      * Command to shoot balls
      */
     public Command Shoot() {
         return run(() -> {
-            double beforeClamp = pidController.calculate(encoderA.getVelocity(), getSetpoint.getAsDouble());  // his has been tested and is safe for robot use
-            double speed = MathUtils.clamp(beforeClamp, 0, 0.7);
+            double speed = MathUtils.clamp(beforeClamp, 0, targetSpeed);
+            targetSpeed = limelightCalculator();
+            beforeClamp = pidController.calculate(encoderA.getVelocity(), targetSpeed);
 
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID output before clamp", beforeClamp);
-                SmartDashboard.putNumber("Shooter PID output after clamp", speed);
+                SmartDashboard.putNumber("Shooter PID target", targetSpeed);
+            }
+
+            if (Math.abs(speed - targetSpeed) < THRESHOLD/*|| speed >= targetSpeed*/) { // If we're within 0.05 of the target speed, we're ready to shoot
+                readyToShoot = true;
+            } else {
+                readyToShoot = false;
             }
 
             setSpeeds(-speed);
+        });
+    }
+
+    public Command StopShooting() {
+        return runOnce(() -> {
+            setSpeeds(0);
+            readyToShoot = false;
+            pidController.reset();
+            targetSpeed = 0;
         });
     }
 
@@ -146,7 +161,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setSpeeds(double speed) {
         sparkMaxA.set(speed);
         sparkMaxB.set(speed);
-        SmartDashboard.putNumber("current speed", speed);
+        if (DriverStation.isTestEnabled())
+            SmartDashboard.putNumber("current speed", speed);
     }
     public double getSpeeds() {
         return sparkMaxA.getEncoder().getVelocity();
@@ -199,7 +215,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
     public BooleanSupplier ready() {
-        return ()->pidController.atSetpoint();
+        return () -> readyToShoot;
     }
 
     /**

@@ -41,13 +41,13 @@ public class intakeSubsystem extends SubsystemBase {
     public Command setPivotSPD(double speed) { // method to pivot the intake
       return run(() -> {
         // Slows down when closer to soft stops or prevents movement when exceeding or too close to soft stops
-        if ((ThroughboreEncoder.getPosition() > SubsystemConstants.INTAKE_MAX_ANGLE_IN&&speed<0) || (ThroughboreEncoder.getPosition() < SubsystemConstants.INTAKE_MAX_ANGLE_OUT&&speed>0)){
+       /* if ((ThroughboreEncoder.getPosition() > SubsystemConstants.INTAKE_MAX_ANGLE_IN&&speed<0) || (ThroughboreEncoder.getPosition() < SubsystemConstants.INTAKE_MAX_ANGLE_OUT&&speed>0)){
           pivotMotor.set(0);
         } else if (ThroughboreEncoder.getPosition() > (SubsystemConstants.INTAKE_MAX_ANGLE_IN - 0.075) || ThroughboreEncoder.getPosition() < (SubsystemConstants.INTAKE_MAX_ANGLE_OUT + 0.075)){
           pivotMotor.set(speed/2);
-        } else {
+        } else {*/
           pivotMotor.set(speed);
-        }
+        //}
       });
     }
     public void pivot(double spd) {
