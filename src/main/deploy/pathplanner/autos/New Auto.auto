@@ -5,19 +5,25 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "stay out of the way"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "if you guys want a tolerable side climb lineup"
+                  "waitTime": 8.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ready climber"
+                  "name": "climb"
                 }
               }
             ]
@@ -26,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lining up will be difficult"
+            "pathName": "Climb after Left"
           }
         },
         {
