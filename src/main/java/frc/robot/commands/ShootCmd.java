@@ -22,7 +22,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void initialize() {
-        pid = shooter.pidController;
+        //pid = shooter.pidController;
         pid.setSetpoint(setpoint);
     }
 

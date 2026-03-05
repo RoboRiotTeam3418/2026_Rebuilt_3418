@@ -228,7 +228,7 @@ public class RobotContainer {
     m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
     m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
     m_secondary.rightBumper().and(m_Shooter.ready()).whileFalse(m_Feeder.stopFeeding());
-    m_secondary.rightTrigger(.25).whileTrue(new ShootCmd(m_Shooter));
+    //m_secondary.rightTrigger(.25).whileTrue(new ShootCmd(m_Shooter));
     /* Shooter stuff:
         m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
     shooter.setDefaultCommand(shooter.Shoot());
