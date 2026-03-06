@@ -31,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
     p = 0.0005,
-    i = 0.00000,
+    i = 0.000001,
     d = 0.00;
     
     /**
@@ -131,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double targetSpeed = 5000; // This is in rpm!! Tune on thursday!
 
-    final double THRESHOLD = targetSpeed / 500; 
+    final double THRESHOLD = 100; 
 
 
     public Command UpdatePids(double speed) {
