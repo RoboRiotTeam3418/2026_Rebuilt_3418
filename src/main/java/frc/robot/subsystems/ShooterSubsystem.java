@@ -30,19 +30,20 @@ import frc.robot.util.math.MathUtils;
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
     private static double 
-    p = 1.2,
-    i = 0.16,
-    d = 0;
+    p = 0.0005,
+    i = 0.00000,
+    d = 0.00;
     
     /**
      * This is the PID controller for the shooter flywheels. DO NOT CHANGE ANYTHING INSIDE, READ ONLY!
      */
-    public SparkClosedLoopController pidController;
+    public SparkClosedLoopController pidControllerA;
     /**
      * If true, override drive control with april tag position
      */
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
+    double setpoint = 0;
     SparkMax sparkMaxA, sparkMaxB;
     public RelativeEncoder encoderA, encoderB;
 
@@ -62,9 +63,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(p, i, d).outputRange(0, 5000);
+        //sconfig.closedLoop.feedForward.
+        config.inverted(true);
 
-        pidController = sparkMaxA.getClosedLoopController();
+        SparkMaxConfig followerConfig = new SparkMaxConfig();
+        followerConfig.follow(sparkMaxA);
+
+        pidControllerA = sparkMaxA.getClosedLoopController();
         sparkMaxA.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        sparkMaxB.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
@@ -127,17 +134,26 @@ public class ShooterSubsystem extends SubsystemBase {
     final double THRESHOLD = targetSpeed / 500; 
 
 
+    public Command UpdatePids(double speed) {
+        return run(() -> {
+            pidControllerA.setSetpoint(speed, ControlType.kVelocity);
+            readyToShoot = (Math.abs(encoderA.getVelocity() - speed) <= THRESHOLD) && speed > 0;
+        });
+    }
+
     /**
      * Command to shoot balls
      */
-    public Command Shoot() {
-        return run(() -> {
-            targetSpeed = limelightCalculator();
-            pidController.setSetpoint(targetSpeed, ControlType.kVelocity);
+    public Command setSetpoint(double value) {
+        return runOnce(() -> {
+            //targetSpeed = limelightCalculator();
+            //pidController.setSetpoint(targetSpeed, ControlType.kVelocity);
             //beforeClamp = pidController.getMAXMotionSetpointPosition();
-            readyToShoot = Math.abs(encoderA.getVelocity() - targetSpeed) <= THRESHOLD;
+            
 
             //setSpeeds(-speed);
+
+            setpoint = value;
 
             if (DriverStation.isTestEnabled()) {
                 SmartDashboard.putNumber("Shooter PID target", targetSpeed);
@@ -152,7 +168,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return runOnce(() -> {
             setSpeeds(0);
             readyToShoot = false;
-            pidController.setSetpoint(0, ControlType.kVelocity);
+            pidControllerA.setSetpoint(0, ControlType.kVelocity);
             targetSpeed = 0;
 
             if (DriverStation.isTestEnabled()) {

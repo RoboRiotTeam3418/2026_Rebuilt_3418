@@ -192,9 +192,8 @@ public class RobotContainer {
     pivotIntake.whileTrue(new pivotIntake(m_Intake,1.0));
     pivotOuttake.whileTrue(new pivotIntake(m_Intake,-1.0));
 
-    
-    m_primary.axisGreaterThan(3, 0.75).whileTrue(m_Shooter.Shoot()).onFalse(m_Shooter.StopShooting());
-    reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());
+
+    m_primary.axisGreaterThan(3, .75).whileTrue(m_Shooter.UpdatePids(2000)).whileFalse(m_Shooter.UpdatePids(0));
 
     // Primary Driver
 
