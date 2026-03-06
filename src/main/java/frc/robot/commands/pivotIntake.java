@@ -52,7 +52,7 @@ public class pivotIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_Intake.setPivotSPD(0);
+    m_Intake.pivot(0);
     SmartDashboard.putBoolean("Pivot Out", false);
   }
 
