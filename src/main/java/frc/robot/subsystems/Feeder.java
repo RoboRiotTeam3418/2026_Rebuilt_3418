@@ -11,15 +11,20 @@ public class Feeder extends SubsystemBase {
 
     public Feeder() {
         feeder = new SparkMax(SubsystemConstants.FEEDER_MOTOR, SparkMax.MotorType.kBrushless);
+        System.out.println("This should be true: " + (feeder != null));
     }
 
     public void feedBalls() {
         feeder.set(0.7);
     }
 
+    public void stopFeedBalls() {
+        feeder.set(0);
+    }
+
     public Command stopFeeding() {
         return runOnce(() -> {
-            feeder.set(0);
+            stopFeedBalls();
         });
     }
 

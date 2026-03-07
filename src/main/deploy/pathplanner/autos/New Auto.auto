@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ready climber"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "lakeland stay out of the way"
+            "pathName": "Copy of lakeland stay out of the way"
           }
         },
         {
@@ -17,28 +23,16 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 7.0
+                  "waitTime": 9.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "flywheels"
+                  "name": "climb"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "probably ideal"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "climb"
           }
         }
       ]

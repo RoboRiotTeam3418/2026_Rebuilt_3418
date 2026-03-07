@@ -18,6 +18,7 @@ public class ShootCmd extends Command {
     */
     public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder) { // Sets everything up
         this.shooter = shooterSubsystem;
+        this.feeder = feeder;
         addRequirements(shooterSubsystem);
         addRequirements(feeder);
     }
@@ -25,6 +26,7 @@ public class ShootCmd extends Command {
     public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder, double setpoint) { // Sets everything up
         this.shooter = shooterSubsystem;
         this.setpoint = setpoint;
+        this.feeder = feeder;
         addRequirements(shooterSubsystem);
         addRequirements(feeder);
     }
@@ -40,14 +42,14 @@ public class ShootCmd extends Command {
         if (shooter.shoudFeed(setpoint)) {
             feeder.feedBalls();
         } else {
-            feeder.stopFeeding();
+            feeder.stopFeedBalls();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
         shooter.setSpeeds(0);
-        feeder.stopFeeding();
+        feeder.stopFeedBalls();
         System.out.println("Finished shoot command.");
     }
 }
