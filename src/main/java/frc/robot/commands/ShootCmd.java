@@ -2,8 +2,6 @@ package frc.robot.commands;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -18,7 +16,7 @@ public class ShootCmd extends Command {
     *
     * @param shooterSubsystem The shooter subsystem.
     */
-    public ShootCmd(ShooterSubsystem shooterSubsystem) { // Sets everything up
+    public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder) { // Sets everything up
         this.shooter = shooterSubsystem;
         addRequirements(shooterSubsystem);
         addRequirements(feeder);
@@ -33,11 +31,12 @@ public class ShootCmd extends Command {
 
     @Override
     public void initialize() {
-        shooter.pidControllerA.setSetpoint(setpoint, ControlType.kVelocity);
+        System.out.println("Running autonomous shoot command...");
     }
 
     @Override
     public void execute() {
+        shooter.pidControllerA.setSetpoint(setpoint, ControlType.kVelocity);
         if (shooter.shoudFeed(setpoint)) {
             feeder.feedBalls();
         } else {
@@ -49,5 +48,6 @@ public class ShootCmd extends Command {
     public void end(boolean interrupted) {
         shooter.setSpeeds(0);
         feeder.stopFeeding();
+        System.out.println("Finished shoot command.");
     }
 }
