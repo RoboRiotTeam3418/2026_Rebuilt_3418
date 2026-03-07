@@ -8,30 +8,42 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6,
-        "y": 4.0
+        "x": 3.6,
+        "y": 5.5
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.26,
-        "y": 4.17
+        "x": 1.063,
+        "y": 4.4
       },
       "prevControl": {
-        "x": 2.1333549869444237,
-        "y": 4.17
+        "x": 1.0630000000000002,
+        "y": 6.4
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "start shooting",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": 1.75,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.2,
     "maxAcceleration": 1.2,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "climb",

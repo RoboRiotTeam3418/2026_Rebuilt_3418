@@ -25,7 +25,7 @@ public class ClimbingCmd extends Command {
         }else if (climb.getHeight()==0){
             direction=.2;
         } else {
-            direction = climb.getCurrentDirection();
+            direction = -climb.getCurrentDirection();
         }
     }
 

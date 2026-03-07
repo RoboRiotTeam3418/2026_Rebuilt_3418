@@ -57,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.SubsystemConstants;
 import frc.robot.commands.pivotIntake;
 import frc.robot.commands.ClimbingCmd;
 import frc.robot.commands.ManualClimbCmd;
@@ -158,6 +159,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, .2, true));
     NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, -.2, true));
     NamedCommands.registerCommand("toggle climb", new ClimbingCmd(m_Climber));
+    NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED));
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();
@@ -233,7 +235,7 @@ public class RobotContainer {
         m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
     shooter.setDefaultCommand(shooter.Shoot());
     */
-   m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(1600)).whileFalse(m_Shooter.UpdatePids(0));
+   m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.UpdatePids(0));
    reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());
 
     // Primary Driver

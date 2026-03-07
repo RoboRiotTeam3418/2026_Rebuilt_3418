@@ -131,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double targetSpeed = 5000; // This is in rpm!! Tune on thursday!
 
-    final double THRESHOLD = 100; 
+    public final double THRESHOLD = 100; 
 
 
     public Command UpdatePids(double speed) {
@@ -239,6 +239,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     public BooleanSupplier ready() {
         return () -> readyToShoot;
+    }
+
+    public boolean shoudFeed(double speed) {
+        return (Math.abs(encoderA.getVelocity() - speed) <= THRESHOLD) && speed > 0;
     }
 
     /**

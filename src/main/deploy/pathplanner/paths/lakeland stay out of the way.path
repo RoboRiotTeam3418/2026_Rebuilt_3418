@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 3.6,
-        "y": 4.0
+        "y": 7.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6,
-        "y": 4.0
+        "x": 2.6000000000000005,
+        "y": 7.65
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.26,
-        "y": 4.17
+        "x": 3.6,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.1333549869444237,
-        "y": 4.17
+        "x": 2.6,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "climb",
+  "folder": "shoot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -36,7 +36,7 @@ public class Climber extends SubsystemBase{
     }
     //2 means at top, 0 means at bottom, 1 means in motion
     public int getHeight() {
-        if (DeadbandUtils.isWithin(getMotorPos(), bottomPos+32, 2)) {
+        if (DeadbandUtils.isWithin(getMotorPos(), bottomPos+SubsystemConstants.CLIMBER_DISTANCE, 2)) {
             return 2;
         } else if (!bottom.get()) {
             return 0;
