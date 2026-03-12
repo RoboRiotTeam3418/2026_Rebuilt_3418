@@ -3,8 +3,9 @@
   "robotLength": 0.8128,
   "holonomicMode": true,
   "pathFolders": [
-    "shoot",
-    "climb"
+    "Test roboRedesign",
+    "climb",
+    "shoot"
   ],
   "autoFolders": [],
   "defaultMaxVel": 1.2,

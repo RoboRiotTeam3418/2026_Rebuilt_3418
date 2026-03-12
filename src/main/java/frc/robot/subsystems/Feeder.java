@@ -30,21 +30,8 @@ public class Feeder extends SubsystemBase {
 
     public Command feed() {
         return runOnce(() -> {
-            /*Thread t = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(750);
-                        feedBalls();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-            t.start();*/
             feedBalls();
             
-            });//.finallyDo(() -> {stopFeeding();});
+            });
     }
 }
