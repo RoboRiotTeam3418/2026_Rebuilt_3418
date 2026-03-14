@@ -41,7 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     double setpoint = 0;
-    SparkMax sparkMaxA, sparkMaxB;
+    SparkMax sparkMaxA, sparkMaxB, sparkMaxC; // WHY DO WE HAVE 3??
     public RelativeEncoder encoderA, encoderB;
 
     /**
@@ -69,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
         pidControllerA = sparkMaxA.getClosedLoopController();
         sparkMaxA.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         sparkMaxB.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        sparkMaxC.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
