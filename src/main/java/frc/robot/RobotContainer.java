@@ -23,11 +23,13 @@ import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -36,10 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.commands.pivotIntake;
-import frc.robot.commands.ClimbingCmd;
-import frc.robot.commands.ManualClimbCmd;
 import frc.robot.commands.ShootCmd;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -68,10 +67,9 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
       "swerve/neo"));
   private final intakeSubsystem m_Intake = new intakeSubsystem();
-  private final Climber m_Climber = new Climber();
   private final Feeder m_Feeder = new Feeder();
   private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
-  private final ClimbingCmd m_startup = new ClimbingCmd(m_Climber);
+
   //private final ShootCmd shootCmd;
 
   public DoubleSupplier getPosTwist = () -> -m_primary.getRightX()*.75;// * ((m_primary.getLeftX() - OperatorConstants.THRUST_SCALAR));
@@ -122,10 +120,6 @@ public class RobotContainer {
    * Clones the angular velocity input stream and converts it to a fieldRelative
    * input stream.
    */
-
-   public ClimbingCmd getClimbingCmd() {
-    return m_startup;
-   }
   
   public DoubleSupplier getNegTwist = () -> m_primary.getLeftX();
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -137,11 +131,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     //shootCmd = new ShootCmd(m_shooter);
-    //TODO make auto command using new climber cmd
-    NamedCommands.registerCommand("ready climber", new ManualClimbCmd(m_Climber, .2, true));
-    NamedCommands.registerCommand("climb", new ManualClimbCmd(m_Climber, -.2, true));
-    NamedCommands.registerCommand("toggle climb", new ClimbingCmd(m_Climber));
     NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED));
+    
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();
@@ -191,11 +182,6 @@ public class RobotContainer {
 
 
     //Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    /*m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2,true));
-    m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2,true));*/
-    //m_secondary.a().whileTrue(new ManualClimbCmd(m_Climber, -.2, true));
-    m_secondary.a().onTrue(new ClimbingCmd(m_Climber));
-    m_secondary.y().whileTrue(new ManualClimbCmd(m_Climber, .2, true));
     // Auto Commands
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);

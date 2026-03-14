@@ -65,11 +65,6 @@ public final class Constants {
     public static final int MEGATAG_VERSION = 2;
     public static final double AGAINST_HUB_SPEED = 1600;
 
-    //Climber ID
-    public static final int CLIMBER_MOTOR=12;
-    //Distance between 2 stops
-    public static final double CLIMBER_DISTANCE=36;
-
     // Intake IDs
     public static final int INTAKEPIVOTID = 17;
     public static final int INTAKEID = 18;
