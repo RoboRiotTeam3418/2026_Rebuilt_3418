@@ -42,14 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     double setpoint = 0;
-<<<<<<< HEAD
-    SparkMax sparkMaxA, sparkMaxB, sparkMaxC; // WHY DO WE HAVE 3??
-    Servo leftServo, rightServo;
-    public RelativeEncoder encoderA, encoderB;
-=======
     SparkMax sparkMaxA, sparkMaxB;
     public RelativeEncoder encoder;
->>>>>>> origin/master
+    Servo leftServo, rightServo;
 
     /**
      * Constructor for shooter subsystem, initializes motors, encoders, and PID

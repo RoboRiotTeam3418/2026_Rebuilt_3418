@@ -9,12 +9,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootCmd extends Command {
     private ShooterSubsystem shooter;
     private Feeder feeder;
-<<<<<<< HEAD
     private double setpoint = 1100;
     private double targetAngle;
-=======
-    private double setpoint = 1600;
->>>>>>> origin/master
 
     /**
     * The shoot command, shoots balls.
@@ -44,12 +40,8 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-<<<<<<< HEAD
         shooter.setAngle(targetAngle);
-        shooter.pidControllerA.setSetpoint(setpoint, ControlType.kVelocity);
-=======
-        shooter.pidController.setSetpoint(setpoint, ControlType.kVelocity);
->>>>>>> origin/master
+        shooter.setTargetSpeed(setpoint);
         if (shooter.shoudFeed(setpoint)) {
             feeder.feedBalls();
         } else {
