@@ -45,9 +45,11 @@ public final class Constants {
 
   /** The mass of the robot */
   public static final double ROBOT_MASS = 86.08; // 32lbs * kg per pound  new weight is 86.08 lbs
-  public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
+  public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS); //TODO: Update this
   public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED = Units.feetToMeters(14.5);
+  /* In meters */
+  public static final double SHOOTER_WHEEL_DIAMETER = 0.127;
   // Maximum speed of the robot in meters per second, used to limit acceleration.
   public static final double DONT_SEE_TAG_WAIT_TIME = 1;
   public static final double POSE_VALIDATION_TIME = 0.3;

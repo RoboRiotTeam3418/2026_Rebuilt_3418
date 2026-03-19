@@ -41,7 +41,7 @@ public class ShootCmd extends Command {
     @Override
     public void execute() {
         shooter.setAngle(targetAngle);
-        shooter.pidController.setSetpoint(setpoint, ControlType.kVelocity);
+        shooter.setTargetSpeed(setpoint);
         if (shooter.shoudFeed(setpoint)) {
             feeder.feedBalls();
         } else {
