@@ -63,6 +63,12 @@ public final class Constants {
     // Shooter IDs
     public static final int SHOOTER_MOTOR_A = 14;
     public static final int SHOOTER_MOTOR_B = 15;
+<<<<<<< HEAD
+    public static final int SHOOTER_MOTOR_C = 0; // Placeholder ID, will change once we know id
+    public static final int LEFT_SERVO_ID = 0;
+    public static final int RIGHT_SERVO_ID = 1;
+=======
+>>>>>>> origin/master
     public static final int FEEDER_MOTOR = 16;
     public static final int MEGATAG_VERSION = 2;
     public static final double AGAINST_HUB_SPEED = 1600;

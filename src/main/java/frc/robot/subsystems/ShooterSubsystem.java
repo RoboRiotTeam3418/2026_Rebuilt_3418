@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,8 +42,14 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     double setpoint = 0;
+<<<<<<< HEAD
+    SparkMax sparkMaxA, sparkMaxB, sparkMaxC; // WHY DO WE HAVE 3??
+    Servo leftServo, rightServo;
+    public RelativeEncoder encoderA, encoderB;
+=======
     SparkMax sparkMaxA, sparkMaxB;
     public RelativeEncoder encoder;
+>>>>>>> origin/master
 
     /**
      * Constructor for shooter subsystem, initializes motors, encoders, and PID
@@ -57,6 +64,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
         sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
+        leftServo = new Servo(SubsystemConstants.LEFT_SERVO_ID);
+        rightServo = new Servo(SubsystemConstants.RIGHT_SERVO_ID);
 
         encoder = sparkMaxA.getEncoder();
 
@@ -113,6 +122,10 @@ public class ShooterSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("Shooter PID target", setpoint);
             }
         });
+    }
+    public void setAngle(double position) {
+        leftServo.set(position);
+        rightServo.set(180-position);
     }
 
     /**
