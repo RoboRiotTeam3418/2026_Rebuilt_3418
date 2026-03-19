@@ -34,15 +34,15 @@ public class ShooterSubsystem extends SubsystemBase {
     /**
      * This is the PID controller for the shooter flywheels. DO NOT CHANGE ANYTHING INSIDE, READ ONLY!
      */
-    public SparkClosedLoopController pidControllerA;
+    public SparkClosedLoopController pidController;
     /**
      * If true, override drive control with april tag position
      */
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     double setpoint = 0;
-    SparkMax sparkMaxA, sparkMaxB, sparkMaxC; // WHY DO WE HAVE 3??
-    public RelativeEncoder encoderA, encoderB;
+    SparkMax sparkMaxA, sparkMaxB;
+    public RelativeEncoder encoder;
 
     /**
      * Constructor for shooter subsystem, initializes motors, encoders, and PID controller. Also sets limelight pipeline. Logs PID values to smart dashboard in test mode.
@@ -55,21 +55,18 @@ public class ShooterSubsystem extends SubsystemBase {
         sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
         sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
 
-        encoderA = sparkMaxA.getEncoder();
-        encoderB = sparkMaxB.getEncoder();
+        encoder = sparkMaxA.getEncoder();
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(p, i, d).outputRange(0, 5000);
-        //sconfig.closedLoop.feedForward.
         config.inverted(true);
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.follow(sparkMaxA);
 
-        pidControllerA = sparkMaxA.getClosedLoopController();
+        pidController = sparkMaxA.getClosedLoopController();
         sparkMaxA.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         sparkMaxB.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        sparkMaxC.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
     }
@@ -134,8 +131,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command UpdatePids(double speed) {
         return run(() -> {
-            pidControllerA.setSetpoint(speed, ControlType.kVelocity);
-            readyToShoot = (Math.abs(encoderA.getVelocity() - speed) <= THRESHOLD) && speed > 0;
+            pidController.setSetpoint(speed, ControlType.kVelocity);
+            readyToShoot = (Math.abs(encoder.getVelocity() - speed) <= THRESHOLD) && speed > 0;
         });
     }
 
@@ -157,7 +154,7 @@ public class ShooterSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("Shooter PID target", targetSpeed);
                 SmartDashboard.putBoolean("Should start feeding", readyToShoot);
                 SmartDashboard.putNumber("Threshold", THRESHOLD);
-                SmartDashboard.putNumber("Math", Math.abs((encoderA.getVelocity() / 6784) - targetSpeed));
+                SmartDashboard.putNumber("Math", Math.abs((encoder.getVelocity() / 6784) - targetSpeed));
             }
         });
     }
@@ -166,7 +163,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return runOnce(() -> {
             setSpeeds(0);
             readyToShoot = false;
-            pidControllerA.setSetpoint(0, ControlType.kVelocity);
+            pidController.setSetpoint(0, ControlType.kVelocity);
             targetSpeed = 0;
 
             if (DriverStation.isTestEnabled()) {
@@ -222,9 +219,8 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Ready to Shoot?",ready().getAsBoolean());
-        SmartDashboard.putNumber("current speed", encoderA.getVelocity());
+        SmartDashboard.putNumber("current speed", encoder.getVelocity());
     }
-
 
     /**
      * Log to console only in test mode
@@ -240,7 +236,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean shoudFeed(double speed) {
-        return (Math.abs(encoderA.getVelocity() - speed) <= THRESHOLD) && speed > 0;
+        return (Math.abs(encoder.getVelocity() - speed) <= THRESHOLD) && speed > 0;
     }
 
     /**
