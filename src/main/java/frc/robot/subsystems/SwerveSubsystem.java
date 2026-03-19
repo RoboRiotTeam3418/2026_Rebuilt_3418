@@ -724,8 +724,8 @@ public class SwerveSubsystem extends SubsystemBase
         nElement = 0.7;
         break;
       default:
-          DriverStation.reportError("Invalid Limelight Pose Estimation Version", false);
-          break;
+          DriverStation.reportError("Invalid Limelight Pose Estimation Version", true);
+          return;
     }
 
     if (shouldUpdate && poseEstimate != null) {
