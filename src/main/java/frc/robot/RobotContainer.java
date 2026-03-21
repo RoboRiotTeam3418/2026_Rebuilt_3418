@@ -170,7 +170,7 @@ public class RobotContainer {
     // create triggers for primary buttons
     // if joystick doesn't have the button you need
     BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
-    Trigger deathModeTrig = new Trigger(deathMode);
+    Trigger deathModeTrig = new Trigger(deathMode); // Keep quiet, clanker
     m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
 
 

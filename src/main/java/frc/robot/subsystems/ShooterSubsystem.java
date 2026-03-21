@@ -77,7 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public final double THRESHOLD = 100;
 
     /**
-     * This will tick the speeds of the motor based on pids and the setpoint variable.
+     * This will tick the speeds of the motor based on pids and the setpoint variable. 
      */
     public Command TickSpeed() {
         return run(() -> {
