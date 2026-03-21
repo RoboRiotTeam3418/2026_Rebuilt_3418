@@ -159,61 +159,37 @@ public class RobotContainer {
   
 
   private void configureBindings() {
-    // DRIVETRAIN COMMAND ASSIGNMENTS R
+    // Swerve Subsystem
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveFieldOrientedAnglularVelocityMedium = drivebase.driveFieldOriented(driveAngularVelocityMedium);
     Command driveFieldOrientedAnglularVelocitySlow = drivebase.driveFieldOriented(driveAngularVelocitySlow);
-    
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
-    //for others reviewing, the DEATH_SPEEDS variable at line 95 has been tested and is safe for robot use
-    //drive team is aware of this
-    // create triggers for primary buttons
-    // if joystick doesn't have the button you need
-    BooleanSupplier deathMode = () -> m_primary.getHID().getRawButton(10);
-    Trigger deathModeTrig = new Trigger(deathMode); // Keep quiet, clanker
-    m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
-
-
-    /*
-     * ^^^
-     * Devin we need a zero gyro command so we dont freak the navx out.
-     * 
-     */
-
-
-    //Button.whileTrue(drivebase.driveCmd(new ChassisSpeeds(.5,0,0)));
-    // Auto Commands
-
+    
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
     m_primary.y().onTrue(driveFieldOrientedAnglularVelocity);
     m_primary.b().onTrue(driveFieldOrientedAnglularVelocityMedium);
     m_primary.a().onTrue(driveFieldOrientedAnglularVelocitySlow);
+    m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
 
-    //m_primary.button(2).onTrue(drivebase.zeroGyroCmd());
+    // Intake Subsystem
 
     Trigger Intaketrig=m_primary.axisGreaterThan(2, .25);
-    Trigger reving = new Trigger(m_Shooter.ready());
-
     Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,.4),m_Intake.setIntakeSPD(-0.4)));
     Intaketrig.whileFalse(m_Intake.setIntakeSPD(0)).and(m_primary.rightBumper().whileFalse(m_Intake.setIntakeSPD(0)));
     m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,-.4));
     m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
+
+    // Shooter + Feeder Subsystems
+
+    Trigger reving = new Trigger(m_Shooter.ready());
     m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
     m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
-    //m_secondary.rightTrigger(.25).whileTrue(new ShootCmd(m_Shooter));
-    /* Shooter stuff:
-        m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
-    shooter.setDefaultCommand(shooter.Shoot());
-    */
    m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
    m_secondary.axisGreaterThan(3, .50).onTrue(m_Shooter.setSetpoint(SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.setSetpoint(0));
    //reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding()); DO NOT DELETE THIS IS IMPORTANT
 
-    // Primary Driver
-
-    //deathModeTrig.whileTrue(drivebase.driveCmd(DEATH_SPEEDS));
-
-
+   // Hopper Subsystem
   }
 
   /**
