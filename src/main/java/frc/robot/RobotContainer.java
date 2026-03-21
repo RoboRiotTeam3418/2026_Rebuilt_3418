@@ -205,7 +205,8 @@ public class RobotContainer {
         m_primary.button(1).onChange(shooter.triggerThing()); will add feeder logic later
     shooter.setDefaultCommand(shooter.Shoot());
     */
-   m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.UpdatePids(0));
+   m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
+   m_secondary.axisGreaterThan(3, .50).onTrue(m_Shooter.setSetpoint(SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.setSetpoint(0));
    //reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding()); DO NOT DELETE THIS IS IMPORTANT
 
     // Primary Driver

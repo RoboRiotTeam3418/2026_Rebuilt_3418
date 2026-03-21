@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -17,10 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.SubsystemConstants;
-import frc.robot.util.LimelightTAMatrix;
-import frc.robot.util.ShooterDistanceMatrix;
 import frc.robot.util.drivers.LimelightHelpers;
 
 /** Shooter subsystem for controlling the flywheel(s) */
@@ -80,13 +76,20 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public final double THRESHOLD = 100;
 
-    public Command UpdatePids(double speed) {
+    /**
+     * This will tick the speeds of the motor based on pids and the setpoint variable.
+     */
+    public Command TickSpeed() {
         return run(() -> {
-            pidController.setSetpoint(speed, ControlType.kVelocity);
-            readyToShoot = (Math.abs(encoder.getVelocity() - speed) <= THRESHOLD) && speed > 0;
+            pidController.setSetpoint(setpoint, ControlType.kVelocity);
+            readyToShoot = (Math.abs(encoder.getVelocity() - setpoint) <= THRESHOLD) && setpoint > 0;
         });
     }
 
+    /**
+     * Sets the target speed for the neos.
+     * @param value
+     */
     public void setTargetSpeed(double value) {
         setpoint = value;
 
@@ -109,7 +112,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command StopShooting() {
         return runOnce(() -> {
-            setSpeeds(0);
             readyToShoot = false;
             pidController.setSetpoint(0, ControlType.kVelocity);
 
@@ -123,52 +125,8 @@ public class ShooterSubsystem extends SubsystemBase {
         rightServo.set(180-position);
     }
 
-    /**
-     * Sets the speed of both motors
-     * 
-     * @param speed the target speed
-     */
-    public void setSpeeds(double speed) {
-        sparkMaxA.set(speed);
-        sparkMaxB.set(speed);
-        if (DriverStation.isTestEnabled())
-            SmartDashboard.putNumber("current speed", speed);
-    }
-
     public double getSpeeds() {
         return sparkMaxA.getEncoder().getVelocity();
-    }
-
-    public void stopMotors() {
-        sparkMaxA.stopMotor();
-        sparkMaxB.stopMotor();
-    }
-
-    /**
-     * Debug command to update PID values
-     * 
-     * @param kP P
-     * @param kI I
-     * @param kD D
-     */
-    public Command UpdatePID(double kP, double kI, double kD) {
-        return runOnce(() -> {
-            Log("Pids updated to: " + kP + ", " + kI + ", " + kD);
-
-            // pidController.setPID(kP, kI, kD);
-            p = kP;
-            i = kI;
-            d = kD;
-        });
-    }
-
-    /**
-     * Debug command to update PID values
-     */
-    public Command UpdatePID() {
-        return runOnce(() -> {
-            // pidController.setPID(p, i, d);
-        });
     }
 
     @Override
@@ -194,15 +152,5 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean shoudFeed(double speed) {
         return (Math.abs(encoder.getVelocity() - speed) <= THRESHOLD) && speed > 0;
-    }
-
-    /**
-     * Test command to verify subsystem is working, recommended use is for
-     * autonomous command testing
-     */
-    public Command test() {
-        return runOnce(() -> {
-            System.out.println("Hi");
-        });
     }
 }
