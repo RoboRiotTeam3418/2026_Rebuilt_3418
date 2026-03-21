@@ -66,7 +66,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(p, i, d).outputRange(0, 5000);
-        config.inverted(true);
+        config.inverted(false);
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.follow(sparkMaxA);
