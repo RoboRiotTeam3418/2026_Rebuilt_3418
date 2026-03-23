@@ -61,11 +61,11 @@ public final class Constants {
 
   public static final class SubsystemConstants {
     // Shooter IDs
-    public static final int SHOOTER_MOTOR_A = 14;
-    public static final int SHOOTER_MOTOR_B = 15;
+    public static final int SHOOTER_MOTOR_A = 9;//14;
+    public static final int SHOOTER_MOTOR_B = 6;//15;
     public static final int LEFT_SERVO_ID = 0;
     public static final int RIGHT_SERVO_ID = 1;
-    public static final int FEEDER_MOTOR = 16;
+    public static final int FEEDER_MOTOR = 5;//16;
     public static final int MEGATAG_VERSION = 2;
     public static final double AGAINST_HUB_SPEED = 1600;
 

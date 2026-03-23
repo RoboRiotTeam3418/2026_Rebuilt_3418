@@ -27,7 +27,7 @@ import frc.robot.util.drivers.LimelightHelpers;
 
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
-    private static double p = 0.0005,
+    private static double p = 0.00005,
             i = 0.000001,
             d = 0.00;
 
@@ -52,6 +52,7 @@ public class ShooterSubsystem extends SubsystemBase {
      * in test mode.
      */
     public ShooterSubsystem() {
+        try {
         Instance = this;
 
         Log("Shooter subsystem loading...\nTest mode is enabled, do not use this in comp it sends a LOT to smart dashboard!!\nP: "
@@ -76,14 +77,23 @@ public class ShooterSubsystem extends SubsystemBase {
         sparkMaxB.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         LimelightHelpers.setPipelineIndex("limelight", Constants.LIMELIGHT_PIPELINE_ID);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     public final double THRESHOLD = 100;
 
     public Command UpdatePids(double speed) {
         return run(() -> {
+            //System.out.println("x");
+            //sparkMaxA.set(0.05);
             pidController.setSetpoint(speed, ControlType.kVelocity);
             readyToShoot = (Math.abs(encoder.getVelocity() - speed) <= THRESHOLD) && speed > 0;
+
+            //if (DriverStation.isTestEnabled()) {
+
+            //}
         });
     }
 
@@ -109,7 +119,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command StopShooting() {
         return runOnce(() -> {
-            setSpeeds(0);
             readyToShoot = false;
             pidController.setSetpoint(0, ControlType.kVelocity);
 

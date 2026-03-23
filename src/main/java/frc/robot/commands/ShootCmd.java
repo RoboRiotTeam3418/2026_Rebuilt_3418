@@ -41,7 +41,8 @@ public class ShootCmd extends Command {
     @Override
     public void execute() {
         shooter.setAngle(targetAngle);
-        shooter.setTargetSpeed(setpoint);
+        //shooter.setTargetSpeed(setpoint);
+        //shooter.TickSpeed();
         if (shooter.shoudFeed(setpoint)) {
             feeder.feedBalls();
         } else {
@@ -51,7 +52,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooter.setSpeeds(0);
+        //shooter.setTargetSpeed(0);
         feeder.stopFeedBalls();
         System.out.println("Finished shoot command.");
     }

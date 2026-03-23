@@ -57,13 +57,13 @@ public class ShootIntoHub extends Command {
     public void execute() {
         swerve.estimatePoseWithLimelight();
         swerveInput.withControllerRotationAxis(getTargetHeading);
-        double targetSpeed = 90 - 
+        /*double targetSpeed = 90 - 
         (Math.asin(-9.81 * (((Constants.CHASSIS.position.getX() + 21.5) + swerve.getPose().getTranslation().getDistance(hubPosition))
          / Math.pow((shooter.encoder.getVelocity())
           * (Constants.SHOOTER_WHEEL_DIAMETER * Math.PI), 2))) / 2)
-          * (180 / Math.PI);
+          * (180 / Math.PI);*/
 
-        shooter.setTargetSpeed(targetSpeed);
+        //shooter.setTargetSpeed(targetSpeed);
 
         swerve.drive(swerveInput); // Change to true if issues
     }
