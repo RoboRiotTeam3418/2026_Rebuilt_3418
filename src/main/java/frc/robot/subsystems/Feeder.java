@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SubsystemConstants;
 
 public class Feeder extends SubsystemBase {
-    SparkMax feeder;
+    SparkFlex feeder;
 
     public Feeder() {
-        feeder = new SparkMax(SubsystemConstants.FEEDER_MOTOR, SparkMax.MotorType.kBrushless);
+        feeder = new SparkFlex(SubsystemConstants.FEEDER_MOTOR, SparkMax.MotorType.kBrushless);
         System.out.println("This should be true: " + (feeder != null));
     }
 
