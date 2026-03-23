@@ -30,6 +30,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -68,7 +69,14 @@ public class RobotContainer {
   //    "swerve/neo"));
   private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Feeder m_Feeder = new Feeder();
+<<<<<<< HEAD
+  private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
+  private final SendableChooser<Double> entrance = new SendableChooser<>();
+  private final SendableChooser<Double> neutral = new SendableChooser<>();
+  private final SendableChooser<Double> exit = new SendableChooser<>();
+=======
   private final ShooterSubsystem m_Shooter;
+>>>>>>> origin/master
 
   //private final ShootCmd shootCmd;
 
@@ -126,9 +134,13 @@ public class RobotContainer {
    */
   public RobotContainer() {
     //shootCmd = new ShootCmd(m_shooter);
+<<<<<<< HEAD
+    NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
+=======
     m_Shooter = new ShooterSubsystem();
     //NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
     
+>>>>>>> origin/master
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();

@@ -64,7 +64,6 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive swerveDrive;
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -210,8 +209,7 @@ public class SwerveSubsystem extends SubsystemBase
   public Command getAutonomousCommand(String pathName)
   {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return autoChooser.getSelected();
-    //return new PathPlannerAuto(pathName);
+    return new PathPlannerAuto(pathName);
   }
 
   /**
