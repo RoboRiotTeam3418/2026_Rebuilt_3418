@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -17,18 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.AprilTagConstants;
 import frc.robot.Constants.SubsystemConstants;
-import frc.robot.util.LimelightTAMatrix;
-import frc.robot.util.ShooterDistanceMatrix;
 import frc.robot.util.drivers.LimelightHelpers;
 
 /** Shooter subsystem for controlling the flywheel(s) */
 
 public class ShooterSubsystem extends SubsystemBase {
     public static ShooterSubsystem Instance;
-    private static double p = 0.00005,
-            i = 0.000001,
+    private static double p = 0.00025,
+            i = 0.0000004,
             d = 0.00;
 
     /**
