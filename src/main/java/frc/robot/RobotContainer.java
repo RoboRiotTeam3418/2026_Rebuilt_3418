@@ -68,7 +68,7 @@ public class RobotContainer {
       "swerve/neo"));
   private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Feeder m_Feeder = new Feeder();
-  private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
+  private final ShooterSubsystem m_Shooter;
 
   //private final ShootCmd shootCmd;
 
@@ -115,11 +115,6 @@ public class RobotContainer {
       .scaleTranslation(.8)
       .allianceRelativeControl(true);
 
-
-  /**
-   * Clones the angular velocity input stream and converts it to a fieldRelative
-   * input stream.
-   */
   
   public DoubleSupplier getNegTwist = () -> m_primary.getLeftX();
   SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
@@ -131,7 +126,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     //shootCmd = new ShootCmd(m_shooter);
-    NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
+    m_Shooter = new ShooterSubsystem();
+    //NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
     
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
@@ -183,11 +179,12 @@ public class RobotContainer {
     // Shooter + Feeder Subsystems
 
     Trigger reving = new Trigger(m_Shooter.ready());
-    m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
-    m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
-   m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
-   m_secondary.axisGreaterThan(3, .50).onTrue(m_Shooter.setSetpoint(SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.setSetpoint(0));
-   //reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding()); DO NOT DELETE THIS IS IMPORTANT
+    //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
+    //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
+    //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
+    m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(75)).whileFalse(m_Shooter.StopShooting());
+    //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
+    m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }
