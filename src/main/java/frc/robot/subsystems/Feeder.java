@@ -15,7 +15,7 @@ public class Feeder extends SubsystemBase {
     }
 
     public void feedBalls() {
-        feeder.set(0.4);
+        feeder.set(0.7);
     }
 
     public void stopFeedBalls() {

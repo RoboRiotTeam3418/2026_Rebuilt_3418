@@ -59,6 +59,6 @@ public class pivotIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (m_Intake.getPivotEncoderPos() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd<0)||(m_Intake.getPivotEncoderPos() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd>0);
+    return (m_Intake.getPivotEncoderPos() >= SubsystemConstants.INTAKE_MAX_ANGLE_IN && spd>0)||(m_Intake.getPivotEncoderPos() <= SubsystemConstants.INTAKE_MAX_ANGLE_OUT && spd<0);
   }
 }

@@ -65,18 +65,14 @@ public class RobotContainer {
 
   // Driver speeds
 
-  //private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-  //    "swerve/neo"));
+  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+      "swerve/neo"));
   private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Feeder m_Feeder = new Feeder();
-<<<<<<< HEAD
   private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
   private final SendableChooser<Double> entrance = new SendableChooser<>();
   private final SendableChooser<Double> neutral = new SendableChooser<>();
   private final SendableChooser<Double> exit = new SendableChooser<>();
-=======
-  private final ShooterSubsystem m_Shooter;
->>>>>>> origin/master
 
   //private final ShootCmd shootCmd;
 
@@ -87,7 +83,7 @@ public class RobotContainer {
         } else return 0;
       };
 
- /* SwerveInputStream driveFollowTag = SwerveInputStream.of(drivebase.getSwerveDrive(), 
+  SwerveInputStream driveFollowTag = SwerveInputStream.of(drivebase.getSwerveDrive(), 
   () -> {
     if (!LimelightHelpers.getTV()) return 0;
     double ta = LimelightHelpers.getTA();
@@ -99,9 +95,9 @@ public class RobotContainer {
     }, 
   () -> 0.0
   ).withControllerRotationAxis(followTag);
-*/
+
   
-  /*SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
       () -> (-m_primary.getLeftY()*.75),
       () -> (-m_primary.getLeftX()*.75))
       .withControllerRotationAxis(getPosTwist)
@@ -122,25 +118,19 @@ public class RobotContainer {
       .deadband(OperatorConstants.DEADBAND)
       .scaleTranslation(.8)
       .allianceRelativeControl(true);
-*/
+
   
   public DoubleSupplier getNegTwist = () -> m_primary.getLeftX();
-  /*SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+  SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
       .withControllerHeadingAxis(m_primary::getLeftX, getNegTwist)// checkfunction
-      .headingWhile(true);*/
+      .headingWhile(true);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     //shootCmd = new ShootCmd(m_shooter);
-<<<<<<< HEAD
     NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
-=======
-    m_Shooter = new ShooterSubsystem();
-    //NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
-    
->>>>>>> origin/master
     //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
     //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
     configureBindings();
@@ -168,7 +158,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Swerve Subsystem
-    /*Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveFieldOrientedAnglularVelocityMedium = drivebase.driveFieldOriented(driveAngularVelocityMedium);
     Command driveFieldOrientedAnglularVelocitySlow = drivebase.driveFieldOriented(driveAngularVelocitySlow);
     final ChassisSpeeds DEATH_SPEEDS =  drivebase.getDeath();
@@ -179,14 +169,14 @@ public class RobotContainer {
     m_primary.b().onTrue(driveFieldOrientedAnglularVelocityMedium);
     m_primary.a().onTrue(driveFieldOrientedAnglularVelocitySlow);
     m_primary.povDown().onTrue(drivebase.zeroGyroCmd());
-*/
+
     // Intake Subsystem
 
     Trigger Intaketrig=m_primary.axisGreaterThan(2, .25);
-    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,.4),m_Intake.setIntakeSPD(-0.4)));
+    Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,-.4),m_Intake.setIntakeSPD(-0.45)));
     Intaketrig.whileFalse(m_Intake.setIntakeSPD(0)).and(m_primary.rightBumper().whileFalse(m_Intake.setIntakeSPD(0)));
-    m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,-.4));
-    m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
+    m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,.2));
+    //m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
 
     // Shooter + Feeder Subsystems
 
@@ -194,10 +184,9 @@ public class RobotContainer {
     //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
     //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
     //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
-    m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(Constants.SubsystemConstants.AGAINST_HUB_SPEED)).whileFalse(m_Shooter.StopShooting());
+    m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting());
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
-    //m_secondary.a()
-    reving.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
+    m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }
@@ -209,10 +198,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;//drivebase.getAutonomousCommand("New Auto");
+    return drivebase.getAutonomousCommand("New Auto");
   }
 
   public void setMotorBrake(boolean brake) {
-    //drivebase.setMotorBrake(brake);
+    drivebase.setMotorBrake(brake);
   }
 }
