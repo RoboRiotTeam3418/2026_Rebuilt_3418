@@ -30,7 +30,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -722,8 +721,8 @@ public class SwerveSubsystem extends SubsystemBase
         nElement = 0.7;
         break;
       default:
-          DriverStation.reportError("Invalid Limelight Pose Estimation Version", true);
-          return;
+          DriverStation.reportError("Invalid Limelight Pose Estimation Version", false);
+          break;
     }
 
     if (shouldUpdate && poseEstimate != null) {
