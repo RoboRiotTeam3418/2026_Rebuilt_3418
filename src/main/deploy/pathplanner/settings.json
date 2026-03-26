@@ -7,9 +7,11 @@
     "no man's land",
     "exit"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 1.2,
-  "defaultMaxAccel": 1.2,
+  "autoFolders": [
+    "right"
+  ],
+  "defaultMaxVel": 2.4,
+  "defaultMaxAccel": 2.4,
   "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 900.0,
   "defaultNominalVoltage": 12.0,

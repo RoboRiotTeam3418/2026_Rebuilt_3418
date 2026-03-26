@@ -7,6 +7,50 @@
         {
           "type": "path",
           "data": {
+            "pathName": "shoot before entering right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "extend intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "rev"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shoot"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "enter right"
           }
         },
@@ -57,6 +101,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "right",
   "choreoAuto": false
 }

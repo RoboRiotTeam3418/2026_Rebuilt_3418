@@ -58,7 +58,7 @@
   "reversed": false,
   "folder": "no man's land",
   "idealStartingState": {
-    "velocity": 1.2,
+    "velocity": 2.4,
     "rotation": 0.0
   },
   "useDefaultConstraints": false

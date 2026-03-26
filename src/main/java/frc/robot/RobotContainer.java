@@ -50,6 +50,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -93,9 +96,6 @@ public class RobotContainer {
   private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Feeder m_Feeder = new Feeder();
   private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
-  private final SendableChooser<Double> entrance = new SendableChooser<>();
-  private final SendableChooser<Double> neutral = new SendableChooser<>();
-  private final SendableChooser<Double> exit = new SendableChooser<>();
 
   //private final ShootCmd shootCmd;
 
@@ -118,6 +118,18 @@ public class RobotContainer {
     }, 
   () -> 0.0
   ).withControllerRotationAxis(followTag);
+
+    //AUTO CHOOSER
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private final SendableChooser<Double> side = new SendableChooser<>();
+  DoubleTopic chosenSide = inst.getDoubleTopic("/SmartDashboard/Left or Right");
+  DoublePublisher sidePublisher = chosenSide.publish();
+  private final SendableChooser<Double> neutral = new SendableChooser<>();
+  DoubleTopic chosenNeutral = inst.getDoubleTopic("/SmartDashboard/Grab or Sabotage");
+  DoublePublisher neutralPublisher = chosenNeutral.publish();
+  private final SendableChooser<Double> exit = new SendableChooser<>();
+  DoubleTopic chosenExit = inst.getDoubleTopic("/SmartDashboard/Exit");
+  DoublePublisher exitPublisher = chosenExit.publish();
 
   
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
@@ -160,6 +172,20 @@ public class RobotContainer {
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    //autonomous stuff
+    side.setDefaultOption("Right", 1.0);
+    neutral.setDefaultOption("Grab", 10.0);
+    exit.setDefaultOption("Same", 1.0);
+    side.addOption("Left", -1.0);
+    neutral.addOption("Sabotage", 20.0);
+    exit.addOption("Opposite", 2.0);
+    exit.addOption("Bulldoze", 3.0);
+    SmartDashboard.putData("Left or Right", side);
+    SmartDashboard.putData("Grab or Sabotage", neutral);
+    SmartDashboard.putData("Exit", exit);
+    inst.startClient4("autos");
+    inst.setServerTeam(3418);
   }
 
   /**
@@ -212,15 +238,59 @@ public class RobotContainer {
 
    // Hopper Subsystem
   }
-
+  //this is the equation for autonomous IDs
+  public double selectedAuto() {
+    double autoNum=side.getSelected()*(neutral.getSelected()+exit.getSelected());
+    return autoNum;
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("New Auto");
+    String chosenAuto="";
+    //I LOVE SWITCH STATEMENTS
+    switch ((int)selectedAuto()) {
+      case 11:
+        chosenAuto=("Grab Right, don't grab left, exit right");
+        break;
+      case 12:
+        chosenAuto=("Grab Right, don't grab left, exit left");
+        break;
+      case 13:
+        chosenAuto=("Grab Right, grab left, exit left");
+        break;
+      case 21:
+        chosenAuto=("Sabotage Right, don't grab left, exit right");
+        break;
+      case 22:
+        chosenAuto=("Sabotage Right, don't grab left, exit left");
+        break;
+      case 23:
+        chosenAuto=("Sabotage Right, grab left, exit left");
+        break;
+      case -11:
+        chosenAuto=("Grab Left, don't grab right, exit left");
+        break;
+      case -12:
+        chosenAuto=("Grab Left, don't grab right, exit right");
+        break;
+      case -13:
+        chosenAuto=("Grab Left, grab right, exit right");
+        break;
+      case -21:
+        chosenAuto=("Sabotage Left, don't grab right, exit left");
+        break;
+      case -22:
+        chosenAuto=("Sabotage Left, don't grab right, exit right");
+        break;
+      case -23:
+        chosenAuto=("Sabotage Left, grab right, exit right");
+        break;
+    }
+    System.out.println(chosenAuto);
+    return drivebase.getAutonomousCommand(chosenAuto);
   }
 
   public void setMotorBrake(boolean brake) {

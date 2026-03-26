@@ -55,6 +55,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "SABOTAGE RIGHT"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "intake"
@@ -63,19 +69,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "grab right"
+            "pathName": "bulldoze right"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stop intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "leave from right via right"
           }
         },
         {

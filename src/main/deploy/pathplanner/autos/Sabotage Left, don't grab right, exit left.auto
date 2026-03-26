@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot before entering right"
+            "pathName": "shoot before entering left"
           }
         },
         {
@@ -51,56 +51,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "enter right"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
+            "pathName": "enter left"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "grab right"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stop intaking"
+            "pathName": "SABOTAGE LEFT"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "leave from right via right"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "rev"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
-                }
-              }
-            ]
+            "pathName": "leave from left via left"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "right",
+  "folder": null,
   "choreoAuto": false
 }
