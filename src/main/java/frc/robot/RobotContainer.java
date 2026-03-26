@@ -45,6 +45,7 @@ package frc.robot;
 import java.io.File;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.jar.Attributes.Name;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -164,10 +165,11 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    //shootCmd = new ShootCmd(m_shooter);
-    NamedCommands.registerCommand("flywheels", new ShootCmd(m_Shooter, m_Feeder, SubsystemConstants.AGAINST_HUB_SPEED, 5));
-    //NamedCommands.registerCommand("start shooting", new ParallelCommandGroup(new RunHopperCmd(m_hopper)),new FeedCmd(m_feeder)); TODO When robot is finished, uncomment
-    //NamedCommands.registerCommand("run flywheels", new ShootCmd(m_shooter));
+    NamedCommands.registerCommand("extend intake", new pivotIntake(m_Intake, -.4));
+    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 3800,0));
+    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,4600,0));
+    NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.45));
+    NamedCommands.registerCommand("stop intaking", m_Intake.setIntakeSPD(0));
     configureBindings();
     LimelightTAMatrix.InitializeMatrix();
     ShooterDistanceMatrix.InitializeMatrix();

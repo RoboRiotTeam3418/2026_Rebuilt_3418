@@ -27,13 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "rev"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot"
+                        "name": "shoot short"
                       }
                     }
                   ]
@@ -85,13 +79,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "rev"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
+                  "name": "shoot long"
                 }
               }
             ]
