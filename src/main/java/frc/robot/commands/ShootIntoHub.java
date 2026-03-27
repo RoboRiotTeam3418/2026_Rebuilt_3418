@@ -1,12 +1,11 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.drivers.LimelightHelpers;
@@ -34,8 +33,8 @@ public class ShootIntoHub extends Command {
     DoubleSupplier getTargetHeading = () -> {
         Translation2d robotLocation = swerve.getPose().getTranslation();
         Translation2d delta = hubPosition.minus(robotLocation);
-        Rotation2d targetHeading = delta.getAngle();
-        return targetHeading.getDegrees();
+        double targetAngle = -Math.atan2(delta.getX(), delta.getY());
+        return targetAngle;
     };
 
     // 90 - (sin⁻¹(gravity * ((size + distance)) / ((rpm * dπ) / 60)²) / 2
@@ -56,7 +55,7 @@ public class ShootIntoHub extends Command {
     @Override
     public void execute() {
         swerve.estimatePoseWithLimelight();
-        swerveInput.withControllerRotationAxis(getTargetHeading);
+        
         /*double targetSpeed = 90 - 
         (Math.asin(-9.81 * (((Constants.CHASSIS.position.getX() + 21.5) + swerve.getPose().getTranslation().getDistance(hubPosition))
          / Math.pow((shooter.encoder.getVelocity())
@@ -65,11 +64,12 @@ public class ShootIntoHub extends Command {
 
         //shooter.setTargetSpeed(targetSpeed);
 
-        swerve.drive(swerveInput); // Change to true if issues
+        swerveInput.withControllerRotationAxis(getTargetHeading);
+        swerve.getSwerveDrive().driveFieldOriented(swerveInput.get());
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooter.setTargetSpeed(0);
+        CommandScheduler.getInstance().schedule(shooter.StopShooting());
     }
 }

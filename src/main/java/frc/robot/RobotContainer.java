@@ -67,6 +67,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.commands.pivotIntake;
 import frc.robot.commands.ShootCmd;
+import frc.robot.commands.ShootIntoHub;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -231,11 +232,8 @@ public class RobotContainer {
 
     // Shooter + Feeder Subsystems
     
-    //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
-    //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
-    //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
-    m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting());
-    //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
+    //m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting()); // For shooting without auto aim
+    m_secondary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(m_Shooter, drivebase, driveAngularVelocity)); // For shooting with auto aim
     m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
