@@ -177,10 +177,10 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //autonomous stuff
-    side.setDefaultOption("Right", 1.0);
+    side.setDefaultOption("Left", 1.0);
     neutral.setDefaultOption("Grab", 10.0);
     exit.setDefaultOption("Same", 1.0);
-    side.addOption("Left", -1.0);
+    side.addOption("Right", -1.0);
     neutral.addOption("Sabotage", 20.0);
     exit.addOption("Opposite", 2.0);
     exit.addOption("Bulldoze", 3.0);
@@ -232,18 +232,12 @@ public class RobotContainer {
 
     // Shooter + Feeder Subsystems
     
-<<<<<<< HEAD
     //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
     //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
     //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
     m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting());
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
     m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
-=======
-    //m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting()); // For shooting without auto aim
-    m_secondary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(m_Shooter, drivebase, driveAngularVelocity)); // For shooting with auto aim
-    m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
->>>>>>> origin/master
 
    // Hopper Subsystem
   }
