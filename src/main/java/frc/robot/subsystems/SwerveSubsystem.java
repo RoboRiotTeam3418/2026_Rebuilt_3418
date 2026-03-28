@@ -31,6 +31,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,6 +44,7 @@ import frc.robot.util.drivers.LimelightHelpers;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -64,6 +67,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final SwerveDrive swerveDrive;
 
+  Field2d field2d = new Field2d();
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -71,6 +76,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
    public SwerveSubsystem(File directory)
   { 
+    
     
     boolean blueAlliance = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue; // Defaults to red when no game is running
     Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
@@ -99,6 +105,8 @@ public class SwerveSubsystem extends SubsystemBase
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     swerveDrive.useInternalFeedbackSensor();
     setupPathPlanner();
+
+    SmartDashboard.putData("Odometry", field2d);
   }
 
   /**
@@ -449,6 +457,8 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
+      estimatePoseWithLimelight();
+      field2d.setRobotPose(getPose());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }

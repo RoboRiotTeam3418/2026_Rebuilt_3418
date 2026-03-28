@@ -66,7 +66,7 @@ public final class Constants {
     public static final int LEFT_SERVO_ID = 0;
     public static final int RIGHT_SERVO_ID = 1;
     public static final int FEEDER_MOTOR = 16;
-    public static final int MEGATAG_VERSION = 2;
+    public static final int MEGATAG_VERSION = 1;
     public static final double AGAINST_HUB_SPEED = 3800;
 
     // Intake IDs
