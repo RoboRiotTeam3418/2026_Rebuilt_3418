@@ -74,7 +74,7 @@ public final class Constants {
     public static final int INTAKEID = 18;
     public static final int INNERID = 20;
     // 0.26 (Max in), 0.068 (max out)
-    public static final double INTAKE_MAX_ANGLE_IN = 0.83; // Maximum angle of intake based on interior of robot
+    public static final double INTAKE_MAX_ANGLE_IN = 0.88; // Maximum angle of intake based on interior of robot
     public static final double INTAKE_MAX_ANGLE_OUT = 0.64; // Maximum angle of intake based on exterior of robot
 
 

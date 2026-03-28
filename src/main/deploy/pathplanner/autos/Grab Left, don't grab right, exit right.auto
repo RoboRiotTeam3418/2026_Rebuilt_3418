@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot before entering right"
+            "pathName": "shoot before entering left"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "enter right"
+            "pathName": "enter left"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "grab right"
+            "pathName": "grab left"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "leave from right via right"
+            "pathName": "leave from left via right"
           }
         },
         {
@@ -75,6 +75,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "right",
+  "folder": null,
   "choreoAuto": false
 }

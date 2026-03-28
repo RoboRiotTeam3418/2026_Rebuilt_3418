@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot before entering right"
+            "pathName": "shoot before entering left"
           }
         },
         {
@@ -38,7 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "enter right"
+            "pathName": "enter left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SABOTAGE LEFT"
           }
         },
         {
@@ -50,19 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "grab right"
+            "pathName": "bulldoze left"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stop intaking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "leave from right via right"
           }
         },
         {
@@ -75,6 +75,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "right",
+  "folder": null,
   "choreoAuto": false
 }

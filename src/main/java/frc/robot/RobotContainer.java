@@ -166,8 +166,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     NamedCommands.registerCommand("extend intake", new pivotIntake(m_Intake, -.4));
-    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 3800,0));
-    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,4600,0));
+    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 4300));
+    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,5000));
     NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.45));
     NamedCommands.registerCommand("stop intaking", m_Intake.setIntakeSPD(0));
     configureBindings();
@@ -186,7 +186,7 @@ public class RobotContainer {
     SmartDashboard.putData("Left or Right", side);
     SmartDashboard.putData("Grab or Sabotage", neutral);
     SmartDashboard.putData("Exit", exit);
-    inst.startClient4("autos");
+    inst.startClient4("Autonomous");
     inst.setServerTeam(3418);
   }
 
@@ -236,7 +236,7 @@ public class RobotContainer {
     //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
     m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting());
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
-    m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
+    m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }

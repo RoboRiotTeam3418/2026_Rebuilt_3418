@@ -94,7 +94,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setTargetSpeed(double value) {
-        setpoint = value;
+        pidController.setSetpoint(value, ControlType.kVelocity);
+            readyToShoot = (Math.abs(encoder.getVelocity() - value) <= THRESHOLD) && value > 0;
 
         if (DriverStation.isTestEnabled()) {
             SmartDashboard.putNumber("Shooter PID target", setpoint);
