@@ -231,6 +231,7 @@ public class RobotContainer {
     Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,-.4),m_Intake.setIntakeSPD(-0.45)));
     Intaketrig.whileFalse(m_Intake.setIntakeSPD(0)).and(m_primary.rightBumper().whileFalse(m_Intake.setIntakeSPD(0)));
     m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,.2));
+    m_primary.rightBumper().onTrue(drivebase.poseTest());
     //m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
 
     // Shooter + Feeder Subsystems

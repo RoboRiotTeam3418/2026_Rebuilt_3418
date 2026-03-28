@@ -129,6 +129,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     //System.out.println(swerveDrive.getModules()[2].getAbsolutePosition());
+    System.out.println(LimelightHelpers.getTA());
     
   }
 
@@ -691,6 +692,11 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return swerveDrive.getPitch();
   }
+  public Command poseTest() {
+    return runOnce(()-> {
+      estimatePoseWithLimelight(true);
+    });
+  }
 
   /**
    * Gets the swerve drive object.
@@ -740,10 +746,11 @@ public class SwerveSubsystem extends SubsystemBase
     if (shouldUpdate && poseEstimate != null) {
       swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(nElement, nElement, 999999999));
       swerveDrive.addVisionMeasurement(poseEstimate.pose, Utils.fpgaToCurrentTime(poseEstimate.timestampSeconds));
-
-      if (resetOdometry) {
-        resetOdometry(poseEstimate.pose);
-      }
     }
+      if (resetOdometry&&LimelightHelpers.getTV()) {
+        resetOdometry(poseEstimate.pose);
+        System.out.println("e");
+      }
+    System.out.println(poseEstimate.tagCount);
   }
 }
