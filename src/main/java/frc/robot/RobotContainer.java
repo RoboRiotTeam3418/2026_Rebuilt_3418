@@ -209,6 +209,9 @@ public class RobotContainer {
   
 
   private void configureBindings() {
+
+    m_secondary.axisGreaterThan(3, .50).whileTrue(new ParallelCommandGroup(new ShootIntoHub(drivebase, driveAngularVelocity), m_Shooter.UpdatePids(6784))).whileFalse(m_Shooter.StopShooting());
+
     // Swerve Subsystem
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     Command driveFieldOrientedAnglularVelocityMedium = drivebase.driveFieldOriented(driveAngularVelocityMedium);
@@ -233,7 +236,7 @@ public class RobotContainer {
     // Shooter + Feeder Subsystems
     
     //m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting()); // For shooting without auto aim
-    m_secondary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(m_Shooter, drivebase, driveAngularVelocity)); // For shooting with auto aim
+     // For shooting with auto aim
     m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
