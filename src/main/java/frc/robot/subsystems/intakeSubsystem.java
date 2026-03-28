@@ -20,13 +20,13 @@ public class intakeSubsystem extends SubsystemBase {
 
 
     // Intake
-    private SparkMax IntakeMotor;
+    private SparkFlex IntakeMotor;
 
 
     public intakeSubsystem() { // Constructor
         pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
-        IntakeMotor = new SparkMax(SubsystemConstants.INTAKEID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
+        IntakeMotor = new SparkFlex(SubsystemConstants.INTAKEID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
     }
 
 
