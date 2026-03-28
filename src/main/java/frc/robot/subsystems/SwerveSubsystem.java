@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -457,8 +458,6 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity)
   {
     return run(() -> {
-      estimatePoseWithLimelight();
-      field2d.setRobotPose(getPose());
       swerveDrive.driveFieldOriented(velocity.get());
     });
   }
@@ -714,8 +713,10 @@ public class SwerveSubsystem extends SubsystemBase
         });
 
   }
-
   public void estimatePoseWithLimelight() {
+    estimatePoseWithLimelight(false);
+  }
+  public void estimatePoseWithLimelight(boolean resetOdometry) {
     swerveDrive.updateOdometry();
     LimelightHelpers.PoseEstimate poseEstimate = null;
     boolean shouldUpdate = false;
@@ -723,7 +724,7 @@ public class SwerveSubsystem extends SubsystemBase
     switch (SubsystemConstants.MEGATAG_VERSION) {
       case 1:
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        shouldUpdate = (poseEstimate.tagCount == 1 && poseEstimate.rawFiducials.length == 1) && poseEstimate.rawFiducials[0].ambiguity <= 0.7 && poseEstimate.rawFiducials[0].distToCamera <= 3;
+        shouldUpdate = (poseEstimate.tagCount == 1 && poseEstimate.rawFiducials.length == 1) && poseEstimate.rawFiducials[0].ambiguity <= 0.7;// && poseEstimate.rawFiducials[0].distToCamera <= 3;
         break;
       case 2:
         LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
@@ -738,7 +739,11 @@ public class SwerveSubsystem extends SubsystemBase
 
     if (shouldUpdate && poseEstimate != null) {
       swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(nElement, nElement, 999999999));
-      swerveDrive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+      swerveDrive.addVisionMeasurement(poseEstimate.pose, Utils.fpgaToCurrentTime(poseEstimate.timestampSeconds));
+
+      if (resetOdometry) {
+        resetOdometry(poseEstimate.pose);
+      }
     }
   }
 }

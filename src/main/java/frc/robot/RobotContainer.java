@@ -210,7 +210,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    m_secondary.axisGreaterThan(3, .50).whileTrue(new ParallelCommandGroup(new ShootIntoHub(drivebase, driveAngularVelocity), m_Shooter.UpdatePids(6784))).whileFalse(m_Shooter.StopShooting());
+    m_primary.axisGreaterThan(3, .50).whileTrue(new ParallelCommandGroup(new ShootIntoHub(drivebase, driveAngularVelocity)/* , m_Shooter.UpdatePids(0)*/));//.whileFalse(m_Shooter.StopShooting());
 
     // Swerve Subsystem
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);

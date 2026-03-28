@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.drivers.LimelightHelpers;
 import swervelib.SwerveInputStream;
 
 /**
@@ -18,9 +19,9 @@ import swervelib.SwerveInputStream;
  */
 public class ShootIntoHub extends Command {
     private SwerveSubsystem swerve;
-    private Translation2d hubPosition = new Translation2d(4.5, 4); // TODO: Set this to the actual hub position
+    private Translation2d hubPosition = new Translation2d(0, 0); // TODO: Set this to the actual hub position
     private SwerveInputStream swerveInput;
-    PIDController pidController = new PIDController(0.05, 0.0032, 0);
+    PIDController pidController = new PIDController(0.2, 0.06, 0);
 
     
     public ShootIntoHub(SwerveSubsystem swerve, SwerveInputStream swerveInput) {
@@ -86,11 +87,12 @@ public class ShootIntoHub extends Command {
     size is the length of the robot + half the length of the hub (4)
     distance is the distance from the hub's edge
     rpm is the rotations per minute
-    diameter is the diameter of the flywheel (either 5/12 feet or .127 meters)
+    diameter is the diameter of the flywheel (either 5/12 feet or .127 mete]rs)
     */
 
     @Override
     public void initialize() {
+        
     }
 
     /**
@@ -98,7 +100,7 @@ public class ShootIntoHub extends Command {
      */
     @Override
     public void execute() {
-        swerve.estimatePoseWithLimelight(); 
+        swerve.estimatePoseWithLimelight();
 
         double rotation = getTargetHeading.getAsDouble();
         ChassisSpeeds speeds = new ChassisSpeeds(swerveInput.get().vxMetersPerSecond, swerveInput.get().vyMetersPerSecond, rotation);
