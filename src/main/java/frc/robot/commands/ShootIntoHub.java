@@ -1,12 +1,12 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.drivers.LimelightHelpers;
@@ -20,6 +20,7 @@ public class ShootIntoHub extends Command {
     private SwerveSubsystem swerve;
     private Translation2d hubPosition = new Translation2d(0, 0); // TODO: Set this to the actual hub position
     private SwerveInputStream swerveInput;
+    PIDController pidController = new PIDController(0.3, 0.034, 0); // 0.3 radians/second 
 
     public ShootIntoHub(ShooterSubsystem shooter, SwerveSubsystem swerve, SwerveInputStream swerveInput) {
         this.shooter = shooter;
@@ -33,12 +34,15 @@ public class ShootIntoHub extends Command {
      */
     DoubleSupplier getTargetHeading = () -> {
         Translation2d robotLocation = swerve.getPose().getTranslation();
+        ChassisSpeeds speeds = swerve.getSwerveDrive().getRobotVelocity();
+        // I found while testing the hub position is actually relative to the robot so this *should* correct for that. Ngl drift on the imu might cause it to freak.
+        hubPosition = hubPosition.minus(new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)); // Gracias father ford
         Translation2d delta = hubPosition.minus(robotLocation);
-        Rotation2d targetHeading = delta.getAngle();
-        return targetHeading.getDegrees();
+        double targetAngle = -Math.atan2(delta.getX(), delta.getY());
+        return pidController.calculate(targetAngle - swerve.getPose().getRotation().getRadians());
     };
 
-    // 90 - (sin⁻¹(gravity * ((size + distance)) / ((rpm * dπ) / 60)²) / 2
+    // 90 - (sin^-1 (gravity * ((size + distance)) / ((rpm * dπ) / 60)^2) / 2
 
     /*
     where:
@@ -50,13 +54,20 @@ public class ShootIntoHub extends Command {
     diameter is the diameter of the flywheel (either 5/12 feet or .127 meters)
     */
 
+    @Override
+    public void initialize() {
+        swerveInput.withControllerRotationAxis(getTargetHeading);
+    }
+
     /**
      * This will not feed because im too lazy to do that rn.
      */
     @Override
     public void execute() {
-        swerve.estimatePoseWithLimelight();
-        swerveInput.withControllerRotationAxis(getTargetHeading);
+        swerve.estimatePoseWithLimelight(); 
+
+        
+        
         /*double targetSpeed = 90 - 
         (Math.asin(-9.81 * (((Constants.CHASSIS.position.getX() + 21.5) + swerve.getPose().getTranslation().getDistance(hubPosition))
          / Math.pow((shooter.encoder.getVelocity())
@@ -65,11 +76,12 @@ public class ShootIntoHub extends Command {
 
         //shooter.setTargetSpeed(targetSpeed);
 
-        swerve.drive(swerveInput); // Change to true if issues
+         // Its possible the target heading will be "behind" but I doubt that will be an issue.
+        swerve.getSwerveDrive().driveFieldOriented(swerveInput.get());
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooter.setTargetSpeed(0);
+        CommandScheduler.getInstance().schedule(shooter.StopShooting());
     }
 }
