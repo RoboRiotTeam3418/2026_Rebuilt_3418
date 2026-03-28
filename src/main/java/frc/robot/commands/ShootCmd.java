@@ -10,7 +10,6 @@ public class ShootCmd extends Command {
     private ShooterSubsystem shooter;
     private Feeder feeder;
     private double setpoint = 1600;
-    private double targetAngle;
 
     /**
     * The shoot command, shoots balls.
@@ -24,11 +23,10 @@ public class ShootCmd extends Command {
         addRequirements(feeder);
     }
 
-    public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder, double setpoint, double angle) { // Sets everything up
+    public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder, double setpoint) { // Sets everything up
         this.shooter = shooterSubsystem;
         this.setpoint = setpoint;
         this.feeder = feeder;
-        this.targetAngle = angle;
         addRequirements(shooterSubsystem);
         addRequirements(feeder);
     }
@@ -40,7 +38,6 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.setAngle(targetAngle);
         shooter.setTargetSpeed(setpoint);
         //shooter.TickSpeed();
         if (shooter.shoudFeed(setpoint)) {
@@ -54,6 +51,7 @@ public class ShootCmd extends Command {
     public void end(boolean interrupted) {
         //shooter.setTargetSpeed(0);
         feeder.stopFeedBalls();
+        shooter.stopMotors();
         System.out.println("Finished shoot command.");
     }
 }

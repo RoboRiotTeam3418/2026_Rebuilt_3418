@@ -35,7 +35,7 @@ public class intakeSubsystem extends SubsystemBase {
 
     // ---------- active / commands ---------- //
     public Command setIntakeSPD(double speed) { // method to activate intake
-      return run(() -> {                       
+      return runOnce(() -> {                       
         IntakeMotor.set(speed);
       });
     }

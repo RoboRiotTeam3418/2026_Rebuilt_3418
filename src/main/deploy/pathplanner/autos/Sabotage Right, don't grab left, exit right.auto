@@ -21,22 +21,15 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot short"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot short"
                 }
               }
             ]

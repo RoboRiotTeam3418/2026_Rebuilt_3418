@@ -167,8 +167,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     NamedCommands.registerCommand("extend intake", new pivotIntake(m_Intake, -.4));
-    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 3800,0));
-    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,4600,0));
+    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 4300));
+    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,5000));
     NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.45));
     NamedCommands.registerCommand("stop intaking", m_Intake.setIntakeSPD(0));
     configureBindings();
@@ -177,17 +177,17 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     //autonomous stuff
-    side.setDefaultOption("Right", 1.0);
+    side.setDefaultOption("Left", 1.0);
     neutral.setDefaultOption("Grab", 10.0);
     exit.setDefaultOption("Same", 1.0);
-    side.addOption("Left", -1.0);
+    side.addOption("Right", -1.0);
     neutral.addOption("Sabotage", 20.0);
     exit.addOption("Opposite", 2.0);
     exit.addOption("Bulldoze", 3.0);
     SmartDashboard.putData("Left or Right", side);
     SmartDashboard.putData("Grab or Sabotage", neutral);
     SmartDashboard.putData("Exit", exit);
-    inst.startClient4("autos");
+    inst.startClient4("Autonomous");
     inst.setServerTeam(3418);
   }
 
@@ -235,9 +235,11 @@ public class RobotContainer {
 
     // Shooter + Feeder Subsystems
     
-    //m_secondary.axisGreaterThan(3, .50).whileTrue(m_Shooter.UpdatePids(3524)).whileFalse(m_Shooter.StopShooting()); // For shooting without auto aim
-     // For shooting with auto aim
-    m_secondary.a().whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
+    //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
+    //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
+    //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
+    //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
+    m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }
