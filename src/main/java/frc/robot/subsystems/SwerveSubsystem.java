@@ -129,7 +129,6 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     //System.out.println(swerveDrive.getModules()[2].getAbsolutePosition());
-    System.out.println(LimelightHelpers.getTA());
     
   }
 
@@ -749,8 +748,6 @@ public class SwerveSubsystem extends SubsystemBase
     }
       if (resetOdometry&&LimelightHelpers.getTV()) {
         resetOdometry(poseEstimate.pose);
-        System.out.println("e");
       }
-    System.out.println(poseEstimate.tagCount);
   }
 }
