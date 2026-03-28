@@ -16,6 +16,7 @@ public class Hopper extends SubsystemBase {
     // Objects
     // A singular NEO vortex controls the belt / conveyor
     SparkFlex conveyerMotor;
+
     // private SparkMax actuatorMotor;
     //private SparkMax bouncerMotor;
 

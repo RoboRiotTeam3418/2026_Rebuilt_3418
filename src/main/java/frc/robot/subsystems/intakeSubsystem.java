@@ -17,7 +17,7 @@ public class intakeSubsystem extends SubsystemBase {
     // Pivot
     private SparkMax pivotMotor; 
     private AbsoluteEncoder ThroughboreEncoder;
-    private SparkFlex innerMotor;
+
 
     // Intake
     private SparkMax IntakeMotor;
@@ -26,7 +26,6 @@ public class intakeSubsystem extends SubsystemBase {
     public intakeSubsystem() { // Constructor
         pivotMotor = new SparkMax(SubsystemConstants.INTAKEPIVOTID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
         ThroughboreEncoder = pivotMotor.getAbsoluteEncoder();
-        innerMotor = new SparkFlex(SubsystemConstants.INNERID, MotorType.kBrushless);
         IntakeMotor = new SparkMax(SubsystemConstants.INTAKEID, MotorType.kBrushless); // Placeholder ID and Placeholder MotorType
     }
 
@@ -54,7 +53,6 @@ public class intakeSubsystem extends SubsystemBase {
     }
     public void pivot(double spd) {
       pivotMotor.set(spd);
-      innerMotor.set(spd);
     }
 
     public Command SetPivotSpeed_NoStops(double speed) { // Not reccomended to use, currently for "testing" purposes. Will remove later.
