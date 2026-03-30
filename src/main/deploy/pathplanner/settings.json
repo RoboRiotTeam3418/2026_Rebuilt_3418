@@ -8,6 +8,7 @@
     "exit"
   ],
   "autoFolders": [
+    "left",
     "right"
   ],
   "defaultMaxVel": 3.6,

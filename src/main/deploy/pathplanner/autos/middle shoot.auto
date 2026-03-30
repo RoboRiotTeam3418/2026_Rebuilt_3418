@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "extend intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "middle shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot short"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
