@@ -182,6 +182,7 @@ public class RobotContainer {
     neutral.setDefaultOption("Grab", 10.0);
     exit.setDefaultOption("Same", 1.0);
     side.addOption("Right", -1.0);
+    side.addOption("center", 0.0);
     neutral.addOption("Sabotage", 20.0);
     exit.addOption("Opposite", 2.0);
     exit.addOption("Bulldoze", 3.0);
@@ -298,6 +299,9 @@ public class RobotContainer {
         break;
       case -23:
         chosenAuto=("Sabotage Left, grab right, exit right");
+        break;
+      case 0:
+        chosenAuto=("middle shoot");
         break;
     }
     System.out.println(chosenAuto);
