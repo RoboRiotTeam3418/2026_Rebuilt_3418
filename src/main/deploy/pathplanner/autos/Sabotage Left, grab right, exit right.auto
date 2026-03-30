@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "shoot before entering left"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "extend intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot before entering left"
           }
         },
         {
@@ -57,12 +57,6 @@
           "type": "path",
           "data": {
             "pathName": "bulldoze left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stop intaking"
           }
         },
         {

@@ -125,8 +125,14 @@ public class ShooterSubsystem extends SubsystemBase {
         });
     }
     public void setAngle(double position) {
-        leftServo.set(position);
-        rightServo.set(180-position);
+        leftServo.setAngle(position);
+        rightServo.setAngle(180-position);
+    }
+    public Command setAngles(double angle) {
+        return runOnce(()-> {
+            System.out.println(angle);
+            setAngle(angle);
+        });
     }
 
     /**
