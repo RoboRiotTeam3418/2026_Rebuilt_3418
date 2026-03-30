@@ -235,8 +235,8 @@ public class RobotContainer {
     m_primary.leftBumper().whileTrue(new pivotIntake(m_Intake,.2));
     m_primary.rightBumper().whileTrue(new wiggleIntake(m_Intake));
     m_primary.x().whileTrue(new ShootCmd(m_Shooter, m_Feeder, 3200));
-    m_primary.povDown().onTrue(m_Shooter.setAngles(45));
-    m_primary.povRight().onTrue(m_Shooter.setAngles(180));
+    m_primary.povDown().onTrue(m_Shooter.setAngles(142));
+    m_primary.povRight().onTrue(m_Shooter.setAngles(145));
     //m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
 
     // Shooter + Feeder Subsystems
