@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -19,9 +20,10 @@ import swervelib.SwerveInputStream;
  */
 public class ShootIntoHub extends Command {
     private SwerveSubsystem swerve;
-    private Translation2d hubPosition = new Translation2d(0, 0); // TODO: Set this to the actual hub position
+    private Translation2d hubPosition = new Translation2d(4.5, 4); // TODO: Set this to the actual hub position
     private SwerveInputStream swerveInput;
-    PIDController pidController = new PIDController(0.2, 0.06, 0);
+    PIDController pidController = new PIDController(0.07, 0, 0);
+    Field2d field = new Field2d();
 
     
     public ShootIntoHub(SwerveSubsystem swerve, SwerveInputStream swerveInput) {
@@ -38,7 +40,7 @@ public class ShootIntoHub extends Command {
         Translation2d robotTranslation = currentPose.getTranslation();
 
         Rotation2d angleToHub = hubPosition.minus(robotTranslation).getAngle();
-        double rotationCommand = angleToHub.minus(currentPose.getRotation()).getRadians();
+        double rotationCommand = angleToHub.minus(currentPose.getRotation().unaryMinus()).getRadians();
 
         if (DriverStation.isTest()) {
             SmartDashboard.putNumber("Angle to hub", angleToHub.getRadians());
@@ -46,7 +48,7 @@ public class ShootIntoHub extends Command {
             SmartDashboard.putNumber("Rotation command", rotationCommand);
         }
 
-        return pidController.calculate(rotationCommand);
+        return pidController.calculate(-rotationCommand);
 
 
         /*Translation2d robotLocation = swerve.getPose().getTranslation();
@@ -92,7 +94,14 @@ public class ShootIntoHub extends Command {
 
     @Override
     public void initialize() {
-        
+        swerve.getSwerveDrive().setHeadingCorrection(true);
+
+        pidController.enableContinuousInput(-Math.PI, Math.PI);
+        pidController.reset();
+        pidController.setTolerance(Math.toRadians(15.0));
+
+        SmartDashboard.putData("VHub", field);
+        field.setRobotPose(hubPosition.getX(), hubPosition.getY(), Rotation2d.kZero);
     }
 
     /**
@@ -100,10 +109,17 @@ public class ShootIntoHub extends Command {
      */
     @Override
     public void execute() {
-        swerve.estimatePoseWithLimelight();
+        swerve.estimatePoseWithLimelight(true);
 
         double rotation = getTargetHeading.getAsDouble();
         ChassisSpeeds speeds = new ChassisSpeeds(swerveInput.get().vxMetersPerSecond, swerveInput.get().vyMetersPerSecond, rotation);
+/* 
+        ChassisSpeeds speeds = swerve.getSwerveDrive().getTargetSpeeds(
+            swerveInput.get().vxMetersPerSecond, // x velocity
+            swerveInput.get().vyMetersPerSecond, // y velocity
+    rotation,
+    swerve.getSwerveDrive().getGyroRotation3d()
+);*/
 
         if (DriverStation.isTest())
             SmartDashboard.putNumber("Rot PID Out", rotation);
@@ -119,6 +135,7 @@ public class ShootIntoHub extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        swerve.getSwerveDrive().setHeadingCorrection(false);
         //CommandScheduler.getInstance().schedule(shooter.StopShooting());
     }
 }
