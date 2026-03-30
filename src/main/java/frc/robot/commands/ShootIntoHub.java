@@ -22,7 +22,7 @@ public class ShootIntoHub extends Command {
     private SwerveSubsystem swerve;
     private Translation2d hubPosition = new Translation2d(4.5, 4); // TODO: Set this to the actual hub position
     private SwerveInputStream swerveInput;
-    PIDController pidController = new PIDController(0.07, 0, 0);
+    PIDController pidController = new PIDController(3.1, 0.8, 0.7);
     Field2d field = new Field2d();
 
     
@@ -40,7 +40,7 @@ public class ShootIntoHub extends Command {
         Translation2d robotTranslation = currentPose.getTranslation();
 
         Rotation2d angleToHub = hubPosition.minus(robotTranslation).getAngle();
-        double rotationCommand = angleToHub.minus(currentPose.getRotation().unaryMinus()).getRadians();
+        double rotationCommand = currentPose.getRotation().minus(angleToHub).getRadians();
 
         if (DriverStation.isTest()) {
             SmartDashboard.putNumber("Angle to hub", angleToHub.getRadians());
@@ -48,7 +48,7 @@ public class ShootIntoHub extends Command {
             SmartDashboard.putNumber("Rotation command", rotationCommand);
         }
 
-        return pidController.calculate(-rotationCommand);
+        return pidController.calculate(rotationCommand);
 
 
         /*Translation2d robotLocation = swerve.getPose().getTranslation();
