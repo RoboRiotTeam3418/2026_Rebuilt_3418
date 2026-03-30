@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "shoot before entering left"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "extend intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot before entering left"
           }
         },
         {
@@ -54,12 +54,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stop intaking"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "leave from left via left"
@@ -75,6 +69,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "left",
   "choreoAuto": false
 }

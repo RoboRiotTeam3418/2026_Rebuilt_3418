@@ -8,11 +8,12 @@
     "exit"
   ],
   "autoFolders": [
+    "left",
     "right"
   ],
-  "defaultMaxVel": 2.4,
-  "defaultMaxAccel": 2.4,
-  "defaultMaxAngVel": 720.0,
+  "defaultMaxVel": 3.6,
+  "defaultMaxAccel": 3.6,
+  "defaultMaxAngVel": 900.0,
   "defaultMaxAngAccel": 900.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 63.9565,

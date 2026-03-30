@@ -66,6 +66,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SubsystemConstants;
 import frc.robot.commands.pivotIntake;
+import frc.robot.commands.wiggleIntake;
 import frc.robot.commands.ShootCmd;
 import frc.robot.commands.ShootIntoHub;
 import frc.robot.subsystems.Feeder;
@@ -167,9 +168,9 @@ public class RobotContainer {
    */
   public RobotContainer() {
     NamedCommands.registerCommand("extend intake", new pivotIntake(m_Intake, -.4));
-    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 4300));
-    NamedCommands.registerCommand("shoot long", new ShootCmd(m_Shooter, m_Feeder,5000));
-    NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.45));
+    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 4000));
+    NamedCommands.registerCommand("shoot long", new ParallelCommandGroup(new ShootCmd(m_Shooter, m_Feeder, 5000), new wiggleIntake(m_Intake)));
+    NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.8));
     NamedCommands.registerCommand("stop intaking", m_Intake.setIntakeSPD(0));
     configureBindings();
     LimelightTAMatrix.InitializeMatrix();
@@ -230,8 +231,11 @@ public class RobotContainer {
     Trigger Intaketrig=m_primary.axisGreaterThan(2, .25);
     Intaketrig.whileTrue(new SequentialCommandGroup(new pivotIntake(m_Intake,-.4),m_Intake.setIntakeSPD(-0.45)));
     Intaketrig.whileFalse(m_Intake.setIntakeSPD(0)).and(m_primary.rightBumper().whileFalse(m_Intake.setIntakeSPD(0)));
-    m_primary.leftBumper().onTrue(new pivotIntake(m_Intake,.2));
-    m_primary.rightBumper().onTrue(drivebase.poseTest());
+    m_primary.leftBumper().whileTrue(new pivotIntake(m_Intake,.2));
+    m_primary.rightBumper().whileTrue(new wiggleIntake(m_Intake));
+    m_primary.x().whileTrue(new ShootCmd(m_Shooter, m_Feeder, 3200));
+    m_primary.povDown().onTrue(m_Shooter.setAngles(45));
+    m_primary.povRight().onTrue(m_Shooter.setAngles(180));
     //m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
 
     // Shooter + Feeder Subsystems
@@ -240,7 +244,8 @@ public class RobotContainer {
     //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
     //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
-    m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
+    m_secondary.rightTrigger().whileTrue(m_Shooter.setSetpoint(3800)).whileFalse(m_Shooter.StopShooting());
+    m_secondary.a()/*.and(m_Shooter.ready())*/.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }
