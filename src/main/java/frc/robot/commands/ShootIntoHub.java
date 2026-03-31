@@ -124,7 +124,6 @@ public class ShootIntoHub extends Command {
         ChassisSpeeds speeds = new ChassisSpeeds(swerveInput.get().vxMetersPerSecond, swerveInput.get().vyMetersPerSecond, rotation);
 
         shooter.setAngle(servoAngle());
-        shooter.UpdatePids(3500);
 
         if (DriverStation.isTest())
             SmartDashboard.putNumber("Rot PID Out", rotation);
