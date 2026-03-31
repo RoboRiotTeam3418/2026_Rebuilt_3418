@@ -135,12 +135,15 @@ public class ShootIntoHub extends Command {
         servos.setAngle(servoAngle());
         //shooter.setTargetSpeed(3500);
 
+<<<<<<< HEAD
         /*if (shooter.ready().getAsBoolean()) {
             feeder.feedBalls();
         } else {
             feeder.stopFeedBalls();
         }*/
 
+=======
+>>>>>>> origin/master
         if (DriverStation.isTest())
             SmartDashboard.putNumber("Rot PID Out", rotation);
 
