@@ -2,8 +2,10 @@ package frc.robot.commands;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Servos;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ShootCmd extends Command {
@@ -11,6 +13,7 @@ public class ShootCmd extends Command {
     private Feeder feeder;
     private double setpoint = 1600;
     private double angle;
+    private Servos servos;
 
     /**
     * The shoot command, shoots balls.
@@ -24,19 +27,20 @@ public class ShootCmd extends Command {
         addRequirements(feeder);
     }
 
-    public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder, double setpoint,double angle) { // Sets everything up
+    public ShootCmd(ShooterSubsystem shooterSubsystem, Feeder feeder, double setpoint,double angle, Servos servos) { // Sets everything up
         this.shooter = shooterSubsystem;
         this.setpoint = setpoint;
         this.feeder = feeder;
         this.angle = angle;
-        addRequirements(shooterSubsystem);
+        this.servos=servos;
+        addRequirements(shooterSubsystem,servos);
         addRequirements(feeder);
     }
 
     @Override
     public void initialize() {
         System.out.println("Running autonomous shoot command...");
-        shooter.setAngle(angle);
+        servos.setAngle(angle);
     }
 
     @Override

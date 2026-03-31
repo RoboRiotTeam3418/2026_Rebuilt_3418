@@ -8,11 +8,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Servos;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.ShooterDistanceMatrix;
@@ -23,25 +25,30 @@ import swervelib.SwerveInputStream;
  */
 public class ShootIntoHub extends Command {
     private SwerveSubsystem swerve;
-    private ShooterSubsystem shooter;
-    private Feeder feeder;
+    private Servos servos;
     private Translation2d hubPosition = new Translation2d(4.5, 4); // TODO: Set this to the actual hub position
     private SwerveInputStream swerveInput;
     PIDController pidController = new PIDController(3.1, 0.8, 0.7);
     Field2d field = new Field2d();
 
     
-    public ShootIntoHub(SwerveSubsystem swerve, SwerveInputStream swerveInput, ShooterSubsystem shooter, Feeder feeder) {
+    public ShootIntoHub(SwerveSubsystem swerve, SwerveInputStream swerveInput, Servos servos) {
         this.swerve = swerve;
-        this.shooter = shooter;
+        this.servos = servos;
         this.swerveInput = swerveInput;
-        this.feeder = feeder;
-        addRequirements(swerve, shooter, feeder);
+        addRequirements(swerve, servos);
     }
 
     double servoAngle() {
         double distanceToHub = swerve.getPose().getTranslation().getDistance(hubPosition);
-        return ShooterDistanceMatrix.get(distanceToHub) - 1;
+
+        double angle = ShooterDistanceMatrix.get(distanceToHub) - 1;;
+        if (DriverStation.isTest()) {
+            SmartDashboard.putNumber("Distance to hub", distanceToHub);
+            SmartDashboard.putNumber("Servo angle", angle);
+        }
+
+        return angle;
     }
 
     /**
@@ -111,6 +118,8 @@ public class ShootIntoHub extends Command {
         pidController.enableContinuousInput(-Math.PI, Math.PI);
         pidController.reset();
         pidController.setTolerance(Math.toRadians(5.0));
+
+        hubPosition = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? new Translation2d(4, 4.5) : new Translation2d(10, 4.5); // TODO: Update with proper positions
     }
 
     /**
@@ -123,14 +132,14 @@ public class ShootIntoHub extends Command {
         double rotation = getTargetHeading.getAsDouble();
         ChassisSpeeds speeds = new ChassisSpeeds(swerveInput.get().vxMetersPerSecond, swerveInput.get().vyMetersPerSecond, rotation);
 
-        shooter.setAngle(servoAngle());
-        shooter.setTargetSpeed(3500);
+        servos.setAngle(servoAngle());
+        //shooter.setTargetSpeed(3500);
 
-        if (shooter.ready().getAsBoolean()) {
+        /*if (shooter.ready().getAsBoolean()) {
             feeder.feedBalls();
         } else {
             feeder.stopFeedBalls();
-        }
+        }*/
 
         if (DriverStation.isTest())
             SmartDashboard.putNumber("Rot PID Out", rotation);
@@ -141,7 +150,5 @@ public class ShootIntoHub extends Command {
     @Override
     public void end(boolean interrupted) {
         swerve.getSwerveDrive().setHeadingCorrection(false);
-        shooter.stopMotors();
-        feeder.stopFeedBalls();
     }
 }

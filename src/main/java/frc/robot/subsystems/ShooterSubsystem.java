@@ -38,7 +38,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public boolean overrideDrive = false;
     public boolean readyToShoot = false;
     double setpoint = 0;
-    Servo leftServo, rightServo;
     SparkMax sparkMaxA, sparkMaxB;
     public RelativeEncoder encoder;
 
@@ -56,8 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         sparkMaxA = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_A, SparkMax.MotorType.kBrushless);
         sparkMaxB = new SparkMax(SubsystemConstants.SHOOTER_MOTOR_B, SparkMax.MotorType.kBrushless);
-        leftServo = new Servo(SubsystemConstants.LEFT_SERVO_ID);
-        rightServo = new Servo(SubsystemConstants.RIGHT_SERVO_ID);
+
 
         encoder = sparkMaxA.getEncoder();
 
@@ -124,16 +122,7 @@ public class ShooterSubsystem extends SubsystemBase {
             }
         });
     }
-    public void setAngle(double position) {
-        leftServo.setAngle(position);
-        rightServo.setAngle(180-position);
-    }
-    public Command setAngles(double angle) {
-        return runOnce(()-> {
-            System.out.println(angle);
-            setAngle(angle);
-        });
-    }
+
 
     /**
      * Sets the speed of both motors

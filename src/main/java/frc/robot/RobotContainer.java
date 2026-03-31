@@ -68,8 +68,10 @@ import frc.robot.Constants.SubsystemConstants;
 import frc.robot.commands.pivotIntake;
 import frc.robot.commands.wiggleIntake;
 import frc.robot.commands.ShootCmd;
+import frc.robot.commands.FlywheelCmd;
 import frc.robot.commands.ShootIntoHub;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Servos;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
@@ -98,6 +100,7 @@ public class RobotContainer {
       "swerve/neo"));
   private final intakeSubsystem m_Intake = new intakeSubsystem();
   private final Feeder m_Feeder = new Feeder();
+  private final Servos m_Servos = new Servos();
   private final ShooterSubsystem m_Shooter = new ShooterSubsystem();
 
   //private final ShootCmd shootCmd;
@@ -168,8 +171,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     NamedCommands.registerCommand("extend intake", new pivotIntake(m_Intake, -.4));
-    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 3500,150));
-    NamedCommands.registerCommand("shoot long", new ParallelCommandGroup(new ShootCmd(m_Shooter, m_Feeder, 3600,60), new wiggleIntake(m_Intake)));
+    NamedCommands.registerCommand("shoot short", new ShootCmd(m_Shooter, m_Feeder, 3500,150,m_Servos));
+    NamedCommands.registerCommand("shoot long", new ParallelCommandGroup(new ShootCmd(m_Shooter, m_Feeder, 3600,60,m_Servos), new wiggleIntake(m_Intake)));
     NamedCommands.registerCommand("intake", m_Intake.setIntakeSPD(-.8));
     NamedCommands.registerCommand("stop intaking", m_Intake.setIntakeSPD(0));
     configureBindings();
@@ -212,7 +215,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    m_primary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(drivebase, driveAngularVelocity, m_Shooter, m_Feeder)).onFalse(m_Shooter.StopShooting());
+    m_primary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(drivebase, driveAngularVelocity, m_Servos)).onFalse(m_Shooter.StopShooting());
 
     // Swerve Subsystem
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
@@ -239,7 +242,7 @@ public class RobotContainer {
     // Shooter + Feeder Subsystems
 
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
-    m_secondary.rightTrigger().whileTrue(m_Shooter.setSetpoint(3500)).onFalse(m_Shooter.StopShooting());
+    m_secondary.rightTrigger().whileTrue(new FlywheelCmd(m_Shooter)).onFalse(m_Shooter.StopShooting());
     m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
