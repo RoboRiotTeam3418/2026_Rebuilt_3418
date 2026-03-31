@@ -212,7 +212,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    m_primary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(drivebase, driveAngularVelocity, m_Shooter));
+    m_primary.axisGreaterThan(3, .50).whileTrue(new ShootIntoHub(drivebase, driveAngularVelocity, m_Shooter, m_Feeder)).onFalse(m_Shooter.StopShooting());
 
     // Swerve Subsystem
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
@@ -240,13 +240,10 @@ public class RobotContainer {
     //m_primary.rightBumper().whileTrue(m_Intake.setIntakeSPD(.4));
 
     // Shooter + Feeder Subsystems
-    
-    //m_secondary.rightBumper().and(m_Shooter.ready()).whileTrue(m_Feeder.feed());
-    //m_secondary.rightBumper().and(m_Shooter.ready()).onFalse(m_Feeder.stopFeeding());
-    //m_Shooter.setDefaultCommand(m_Shooter.TickSpeed());
+
     //m_secondary.rightTrigger(.25) TODO: Add safeguard cause it's not working.
-    m_secondary.rightTrigger().whileTrue(m_Shooter.setSetpoint(3500)).whileFalse(m_Shooter.StopShooting());
-    m_secondary.a()/*.and(m_Shooter.ready())*/.whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
+    m_secondary.rightTrigger().whileTrue(m_Shooter.setSetpoint(3500)).onFalse(m_Shooter.StopShooting());
+    m_secondary.a().and(m_Shooter.ready()).whileTrue(m_Feeder.feed()).onFalse(m_Feeder.stopFeeding());// DO NOT DELETE THIS IS IMPORTANT
 
    // Hopper Subsystem
   }

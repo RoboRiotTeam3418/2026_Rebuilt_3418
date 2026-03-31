@@ -36,14 +36,14 @@ public class ShootCmd extends Command {
     @Override
     public void initialize() {
         System.out.println("Running autonomous shoot command...");
+        shooter.setAngle(angle);
     }
 
     @Override
     public void execute() {
-        shooter.setTargetSpeed(setpoint);
-        shooter.setAngle(angle);
-        //shooter.TickSpeed();
-        if (shooter.shoudFeed(setpoint)) {
+        shooter.UpdatePids(setpoint);
+
+        if (shooter.ready().getAsBoolean()) {
             feeder.feedBalls();
         } else {
             feeder.stopFeedBalls();
