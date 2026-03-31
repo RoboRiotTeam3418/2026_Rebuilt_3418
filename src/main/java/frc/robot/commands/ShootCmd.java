@@ -41,7 +41,7 @@ public class ShootCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.UpdatePids(setpoint);
+        shooter.setTargetSpeed(setpoint);
 
         if (shooter.ready().getAsBoolean()) {
             feeder.feedBalls();
