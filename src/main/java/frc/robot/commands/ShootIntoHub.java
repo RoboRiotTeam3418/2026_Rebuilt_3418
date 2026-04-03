@@ -42,7 +42,7 @@ public class ShootIntoHub extends Command {
     double servoAngle() {
         double distanceToHub = swerve.getPose().getTranslation().getDistance(hubPosition);
 
-        double angle = ShooterDistanceMatrix.get(distanceToHub) - 1;;
+        double angle = ShooterDistanceMatrix.get(distanceToHub) - 0.3;
         if (DriverStation.isTest()) {
             SmartDashboard.putNumber("Distance to hub", distanceToHub);
             SmartDashboard.putNumber("Servo angle", angle);
@@ -119,7 +119,7 @@ public class ShootIntoHub extends Command {
         pidController.reset();
         pidController.setTolerance(Math.toRadians(5.0));
 
-        hubPosition = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? new Translation2d(4, 4.5) : new Translation2d(10, 4.5); // TODO: Update with proper positions
+        hubPosition = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red ? new Translation2d(4, 4.5) : new Translation2d(15.75, 4.5); // TODO: Update with proper positions
     }
 
     /**
@@ -135,15 +135,6 @@ public class ShootIntoHub extends Command {
         servos.setAngle(servoAngle());
         //shooter.setTargetSpeed(3500);
 
-<<<<<<< HEAD
-        /*if (shooter.ready().getAsBoolean()) {
-            feeder.feedBalls();
-        } else {
-            feeder.stopFeedBalls();
-        }*/
-
-=======
->>>>>>> origin/master
         if (DriverStation.isTest())
             SmartDashboard.putNumber("Rot PID Out", rotation);
 
